@@ -1,0 +1,14 @@
+# Normalize line endings
+* text=auto eol=lf
+
+# Lockfiles are generated — don't show in diffs by default, still track them
+# <- Add lock files here ->
+
+# Treat these as binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
