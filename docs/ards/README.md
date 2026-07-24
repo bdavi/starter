@@ -40,4 +40,5 @@ What this makes easier, what this makes harder, what we're deferring or acceptin
 |-----|-------|--------|
 | [0000](./0000-purpose-and-goals.md) | Project Purpose & Design Goals | Accepted |
 | [0001](./0001-monorepo-vs-polyrepo.md) | Monorepo vs Polyrepo | Accepted |
+| [0002](./0002-ai-agent-context-files.md) | AI Agent Context Files | Accepted |
 

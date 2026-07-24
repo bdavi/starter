@@ -1,0 +1,10 @@
+# Commits listed here are ignored by `git blame`.
+#
+# Use for commits that touch many lines without changing meaning
+# (formatting/reformatting, mass renames, lint-fix sweeps), so blame still
+# points at the last meaningful change.
+#
+# Usage: git blame --ignore-revs-file .git-blame-ignore-revs <file>
+# Or once, per clone: git config blame.ignoreRevsFile .git-blame-ignore-revs
+#
+# Empty for now — add commit hashes here as they occur.
