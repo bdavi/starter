@@ -44,4 +44,6 @@ What this makes easier, what this makes harder, what we're deferring or acceptin
 | [00003](./00003-web-app-language-and-architecture.md) | Web Application Language & Architecture | Accepted |
 | [00004](./00004-monorepo-app-and-package-structure.md) | Monorepo App & Package Structure | Accepted |
 | [00005](./00005-monorepo-build-tooling.md) | Monorepo Build Tooling | Accepted |
+| [00006](./00006-documentation-strategy.md) | Documentation Strategy | Accepted |
+| [00007](./00007-testing-and-qa-strategy.md) | Testing & QA Strategy | Accepted |
 
