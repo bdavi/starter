@@ -11,11 +11,17 @@ A reusable starter template for building SaaS products. Full purpose and design 
 This is a monorepo ([ADR-0001](./docs/ards/0001-monorepo-vs-polyrepo.md)):
 
 - `docs/ards/` — Architecture Decision Records, in chronological order. Read the relevant ones before making structural changes.
-- code structures TBD
+- `apps/web` — customer-facing product (Next.js, colocated backend) — not yet scaffolded. See [ADR-0003](./docs/ards/0003-web-app-language-and-architecture.md).
+- `apps/worker` — background/async job processor (TypeScript) — not yet scaffolded.
+- `apps/admin` — internal admin tooling, separate deployable from `apps/web` — not yet scaffolded.
+- `apps/mobile` — planned, not yet built: React Native via Expo, once a native app is actually needed.
+- `packages/db`, `packages/domain`, `packages/schemas`, `packages/queue`, `packages/email`, `packages/ui`, `packages/config` — shared logic; apps stay thin orchestration shells around these. See [ADR-0004](./docs/ards/0004-monorepo-app-and-package-structure.md) for what each holds and why.
 
 ## Status
 
-No stack, package manager, or build/test/lint tooling has been chosen yet. There are no build, test, or lint commands to run in this repo at this time. This section will be filled in once that decision is made and recorded as an ADR — do not assume or invent commands in the meantime.
+Stack decided: TypeScript throughout, pnpm workspaces + Nx for the monorepo, Next.js for `apps/web` (see [ADR-0003](./docs/ards/0003-web-app-language-and-architecture.md), [ADR-0004](./docs/ards/0004-monorepo-app-and-package-structure.md), [ADR-0005](./docs/ards/0005-monorepo-build-tooling.md)).
+
+**Nothing has been scaffolded yet** — no `package.json`, no actual app/package directories, no build/test/lint commands exist in this repo at this time. Do not assume or invent commands; check whether scaffolding has landed before claiming a command exists.
 
 ## Conventions
 

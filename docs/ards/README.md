@@ -41,4 +41,7 @@ What this makes easier, what this makes harder, what we're deferring or acceptin
 | [0000](./0000-purpose-and-goals.md) | Project Purpose & Design Goals | Accepted |
 | [0001](./0001-monorepo-vs-polyrepo.md) | Monorepo vs Polyrepo | Accepted |
 | [0002](./0002-ai-agent-context-files.md) | AI Agent Context Files | Accepted |
+| [0003](./0003-web-app-language-and-architecture.md) | Web Application Language & Architecture | Accepted |
+| [0004](./0004-monorepo-app-and-package-structure.md) | Monorepo App & Package Structure | Accepted |
+| [0005](./0005-monorepo-build-tooling.md) | Monorepo Build Tooling | Accepted |
 
