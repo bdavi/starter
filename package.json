@@ -1,0 +1,12 @@
+{
+  "name": "starter",
+  "version": "0.0.0",
+  "private": true,
+  "description": "A reusable starter template for building SaaS products.",
+  "license": "MIT",
+  "type": "module",
+  "packageManager": "pnpm@11.17.0",
+  "devDependencies": {
+    "nx": "23.1.0"
+  }
+}

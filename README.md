@@ -14,11 +14,17 @@ This is a monorepo (see [ADR-00001](./docs/adrs/00001-monorepo-vs-polyrepo.md)),
 - `apps/mobile` — planned (React Native / Expo), once a native app is actually needed
 - `packages/*` — shared logic (data access, domain rules, validation schemas, UI components, etc.) that the apps above are thin orchestration layers around
 
-None of this is scaffolded yet — the ADRs above record the decision, not a working setup.
+The workspace itself is scaffolded (`package.json`, `pnpm-workspace.yaml`, Nx); no apps or packages exist yet.
 
 ## Getting started
 
-Setup instructions land here once the monorepo is actually scaffolded (`package.json`, workspace config, first app).
+Install [Node and pnpm](./.tool-versions) (via [asdf](https://asdf-vm.com/) or [mise](https://mise.jdx.dev/), your choice), then:
+
+```
+pnpm install
+```
+
+There's nothing to run yet — no apps exist in the workspace. `pnpm nx show projects` will list them as they're added.
 
 ## Architecture Decision Records
 

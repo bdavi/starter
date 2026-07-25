@@ -21,7 +21,7 @@ This is a monorepo ([ADR-00001](./docs/adrs/00001-monorepo-vs-polyrepo.md)):
 
 Stack decided: TypeScript throughout, pnpm workspaces + Nx for the monorepo, Next.js for `apps/web` (see [ADR-00003](./docs/adrs/00003-web-app-language-and-architecture.md), [ADR-00004](./docs/adrs/00004-monorepo-app-and-package-structure.md), [ADR-00005](./docs/adrs/00005-monorepo-build-tooling.md)).
 
-**Nothing has been scaffolded yet** — no `package.json`, no actual app/package directories, no build/test/lint commands exist in this repo at this time. Do not assume or invent commands; check whether scaffolding has landed before claiming a command exists.
+**The workspace itself is scaffolded**: root `package.json`, `pnpm-workspace.yaml`, and Nx (`nx.json`) are set up. Run tasks via `pnpm nx <command>` (not a global `nx` install). **No apps or packages exist yet** — `apps/web`, `apps/worker`, etc. are still just directories described in ADR-00004, not real projects. Do not assume or invent build/test/lint commands for a specific app/package until it's actually been scaffolded; check `pnpm nx show projects` before claiming a command exists.
 
 Required Node and pnpm versions are pinned in `.tool-versions` (the portable format shared by both [asdf](https://asdf-vm.com/) and [mise](https://mise.jdx.dev/) — use whichever you prefer, neither is mandated).
 
