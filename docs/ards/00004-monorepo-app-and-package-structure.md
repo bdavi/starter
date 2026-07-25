@@ -1,15 +1,15 @@
-# ADR-0004: Monorepo Application & Package Structure
+# ADR-00004: Monorepo Application & Package Structure
 
 Status: Accepted
 Date: 2026-07-24
 
 ## Context
 
-ADR-0001 chose a monorepo with an `apps/*` / `packages/*` convention; ADR-0003 chose TypeScript and a colocated Next.js architecture for the core product. Several needs surfaced during design that a single `apps/web` can't satisfy on its own:
+ADR-00001 chose a monorepo with an `apps/*` / `packages/*` convention; ADR-00003 chose TypeScript and a colocated Next.js architecture for the core product. Several needs surfaced during design that a single `apps/web` can't satisfy on its own:
 
 - **Background/async work doesn't fit a request/response app.** Sending emails, processing uploads, generating reports, retrying webhooks, and scheduled jobs need to run outside the request lifecycle — and serverless hosting (the natural target for a Next.js app) has execution time limits and no persistent process, so this can't just live inside `apps/web`.
 - **Admin tooling has a different security perimeter than the customer-facing app.** Gating admin routes inside the public app risks shipping admin logic in the public bundle and depends on a role check never breaking.
-- **A native mobile app is planned, though not yet built** (see ADR-0003) — when it arrives, it should share as much logic/types with the rest of the system as possible.
+- **A native mobile app is planned, though not yet built** (see ADR-00003) — when it arrives, it should share as much logic/types with the rest of the system as possible.
 - **The business logic and data-access patterns used by these apps need one home**, not one per app, or they'll drift out of sync with each other.
 - **The future is genuinely uncertain**: possible AI/ML integration (likely Python-shaped if it goes beyond calling hosted LLM APIs) and possible future need for a non-TypeScript language for CPU-bound, high-throughput processing (e.g. Elixir, Go, Rust) if TypeScript's raw throughput is ever the actual bottleneck.
 
@@ -17,10 +17,10 @@ ADR-0001 chose a monorepo with an `apps/*` / `packages/*` convention; ADR-0003 c
 
 ### Apps
 
-- **`apps/web`** — the customer-facing product. Next.js, colocated backend per ADR-0003.
+- **`apps/web`** — the customer-facing product. Next.js, colocated backend per ADR-00003.
 - **`apps/worker`** — background/async job processor, TypeScript. Exists specifically because request/response apps and serverless hosting can't run long-lived or scheduled work. Will need different hosting than `apps/web` (a persistent process, not typical serverless) — left for a future hosting ADR.
 - **`apps/admin`** — a separate deployable for internal tooling, not routes gated inside `apps/web`. Keeps admin-only code out of the public bundle and allows a tighter, independent security perimeter (auth, network restrictions) without depending on the customer app's deploy.
-- **`apps/mobile`** — planned, not yet built. React Native via Expo when it happens (see ADR-0003), specifically so it can import `packages/domain`, `packages/schemas`, and a typed API client rather than reimplementing logic in a second language.
+- **`apps/mobile`** — planned, not yet built. React Native via Expo when it happens (see ADR-00003), specifically so it can import `packages/domain`, `packages/schemas`, and a typed API client rather than reimplementing logic in a second language.
 
 ### Packages
 
@@ -36,7 +36,7 @@ Apps orchestrate (translate an HTTP request or queue message into a call), packa
 
 ### Principle: future services are defined by data ownership + API, not by language
 
-A component only becomes a genuinely separate *service* (as opposed to another thin app sharing `packages/db`) when it owns its own data. When that's true, other parts of the system must reach it through its API or events — never by importing a shared package that touches its data directly. This boundary is deliberately language-agnostic: it's what allows a future component (e.g. a Python service for real ML/model-training work, or an Elixir/Go/Rust service for CPU-bound high-throughput processing, if TypeScript's throughput is ever genuinely the bottleneck) to be added later without re-architecting anything that already exists. Per ADR-0001, such a service still belongs in this monorepo — the repo boundary and the service boundary are orthogonal; splitting the repo is justified by things like hard access-control needs, not by architecture alone.
+A component only becomes a genuinely separate *service* (as opposed to another thin app sharing `packages/db`) when it owns its own data. When that's true, other parts of the system must reach it through its API or events — never by importing a shared package that touches its data directly. This boundary is deliberately language-agnostic: it's what allows a future component (e.g. a Python service for real ML/model-training work, or an Elixir/Go/Rust service for CPU-bound high-throughput processing, if TypeScript's throughput is ever genuinely the bottleneck) to be added later without re-architecting anything that already exists. Per ADR-00001, such a service still belongs in this monorepo — the repo boundary and the service boundary are orthogonal; splitting the repo is justified by things like hard access-control needs, not by architecture alone.
 
 We are explicitly *not* building any such service now — this is a future-proofing principle, not new scope. Whether it's ever needed depends on real, not hypothetical, requirements (e.g. AI/ML work turning out to need real model training rather than just calling a hosted LLM API; a CPU-bound — not I/O-bound — data-processing workload TypeScript genuinely can't handle).
 

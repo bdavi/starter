@@ -1,4 +1,4 @@
-# ADR-0001: Monorepo vs Polyrepo
+# ADR-00001: Monorepo vs Polyrepo
 
 Status: Accepted
 Date: 2026-07-23

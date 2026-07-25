@@ -1,11 +1,11 @@
-# ADR-0002: AI Agent Context Files
+# ADR-00002: AI Agent Context Files
 
 Status: Accepted
 Date: 2026-07-23
 
 ## Context
 
-ADR-0000 names AI-tooling effectiveness as an explicit, first-class design goal — coding agents should be able to navigate this repo, understand context, and make safe changes, not just humans. ADR-0001 chose a monorepo partly for the same reason: one place for agents to find full context.
+ADR-00000 names AI-tooling effectiveness as an explicit, first-class design goal — coding agents should be able to navigate this repo, understand context, and make safe changes, not just humans. ADR-00001 chose a monorepo partly for the same reason: one place for agents to find full context.
 
 Right now the repo has no dedicated file telling an agent *how* to work here — build/test commands, coding conventions, directory boundaries. The ADR log documents *why* decisions were made, not operational instructions, and agents shouldn't have to infer conventions from scratch each session.
 
@@ -27,7 +27,7 @@ We want a format that works across multiple AI coding tools (Claude Code today, 
 
 4. **Status quo** (rely on the ADR log only)
    - Pros: zero additional effort
-   - Cons: fails ADR-0000's explicit AI-tooling goal directly; agents have to infer conventions instead of being told, and rationale (the "why") is not a substitute for operational instructions (the "how")
+   - Cons: fails ADR-00000's explicit AI-tooling goal directly; agents have to infer conventions instead of being told, and rationale (the "why") is not a substitute for operational instructions (the "how")
 
 ## Decision
 

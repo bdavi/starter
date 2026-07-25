@@ -14,9 +14,9 @@ This folder tracks the significant technical decisions made while building this 
 Each ADR follows this template:
 
 ```
-# ADR-NNNN: <short title>
+# ADR-NNNNN: <short title>
 
-Status: Proposed | Accepted | Superseded by ADR-XXXX | Deprecated
+Status: Proposed | Accepted | Superseded by ADR-XXXXX | Deprecated
 Date: YYYY-MM-DD
 
 ## Context
@@ -38,10 +38,10 @@ What this makes easier, what this makes harder, what we're deferring or acceptin
 
 | ADR | Title | Status |
 |-----|-------|--------|
-| [0000](./0000-purpose-and-goals.md) | Project Purpose & Design Goals | Accepted |
-| [0001](./0001-monorepo-vs-polyrepo.md) | Monorepo vs Polyrepo | Accepted |
-| [0002](./0002-ai-agent-context-files.md) | AI Agent Context Files | Accepted |
-| [0003](./0003-web-app-language-and-architecture.md) | Web Application Language & Architecture | Accepted |
-| [0004](./0004-monorepo-app-and-package-structure.md) | Monorepo App & Package Structure | Accepted |
-| [0005](./0005-monorepo-build-tooling.md) | Monorepo Build Tooling | Accepted |
+| [00000](./00000-purpose-and-goals.md) | Project Purpose & Design Goals | Accepted |
+| [00001](./00001-monorepo-vs-polyrepo.md) | Monorepo vs Polyrepo | Accepted |
+| [00002](./00002-ai-agent-context-files.md) | AI Agent Context Files | Accepted |
+| [00003](./00003-web-app-language-and-architecture.md) | Web Application Language & Architecture | Accepted |
+| [00004](./00004-monorepo-app-and-package-structure.md) | Monorepo App & Package Structure | Accepted |
+| [00005](./00005-monorepo-build-tooling.md) | Monorepo Build Tooling | Accepted |
 

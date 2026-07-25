@@ -1,4 +1,4 @@
-# ADR-0000: Project Purpose & Design Goals
+# ADR-00000: Project Purpose & Design Goals
 
 Status: Accepted
 Date: 2026-07-23
