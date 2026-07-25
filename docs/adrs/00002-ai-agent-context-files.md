@@ -37,7 +37,7 @@ A root `AGENTS.md` is added now, but scoped to only what's already true (purpose
 
 We commit now to the community-standard **nested convention**: once `apps/*` and `packages/*` contain real packages, each gets its own `AGENTS.md` describing that package's build/test/run commands and conventions, with agents using the nearest `AGENTS.md` to the file being edited. Deciding this now avoids re-litigating it when the first app/package is added.
 
-Content split going forward: `docs/ards/` remains the record of *why* (decision rationale); `AGENTS.md` is the record of *how* (operational instructions). `AGENTS.md` should link back to the ADR log rather than duplicating rationale, so the two don't drift apart.
+Content split going forward: `docs/adrs/` remains the record of *why* (decision rationale); `AGENTS.md` is the record of *how* (operational instructions). `AGENTS.md` should link back to the ADR log rather than duplicating rationale, so the two don't drift apart.
 
 ## Consequences
 
