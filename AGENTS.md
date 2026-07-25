@@ -23,6 +23,10 @@ Stack decided: TypeScript throughout, pnpm workspaces + Nx for the monorepo, Nex
 
 **Nothing has been scaffolded yet** — no `package.json`, no actual app/package directories, no build/test/lint commands exist in this repo at this time. Do not assume or invent commands; check whether scaffolding has landed before claiming a command exists.
 
+Required Node and pnpm versions are pinned in `.tool-versions` (the portable format shared by both [asdf](https://asdf-vm.com/) and [mise](https://mise.jdx.dev/) — use whichever you prefer, neither is mandated).
+
+Local dev environment decided (see [ADR-00008](./docs/adrs/00008-local-development-environment.md)): Docker Compose for backing services (Postgres, Redis, etc.) only — apps run natively via `nx run-many -t dev`, not in containers. Not scaffolded yet: no `docker-compose.yml`, dev script, or reset script exists in this repo at this time.
+
 ## Conventions
 
 - Significant technical decisions are recorded as ADRs in `docs/adrs/`, following the template in `docs/adrs/README.md`. If you make or observe a structural/architectural decision, propose an ADR for it rather than leaving it undocumented.
