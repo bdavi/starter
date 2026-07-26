@@ -7,7 +7,26 @@
       "type:app"
     ],
     "targets": {
+      "typegen": {
+        "cache": true,
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "apps/web",
+          "command": "next typegen"
+        },
+        "inputs": [
+          "default",
+          "^default"
+        ],
+        "outputs": [
+          "{projectRoot}/next-env.d.ts",
+          "{projectRoot}/.next/types"
+        ]
+      },
       "typecheck": {
+        "dependsOn": [
+          "typegen"
+        ],
         "cache": true,
         "executor": "nx:run-commands",
         "options": {
@@ -19,6 +38,11 @@
           "^default"
         ],
         "outputs": []
+      },
+      "lint": {
+        "dependsOn": [
+          "typegen"
+        ]
       }
     }
   },
