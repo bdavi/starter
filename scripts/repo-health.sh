@@ -5,6 +5,13 @@
 
 set -uo pipefail
 
+# Every check below assumes it's running from the repo root (pnpm-lock.yaml,
+# knip.json, etc. are resolved relative to cwd) — don't rely on the caller's
+# cwd, since this script can be invoked from anywhere (`pnpm run health`
+# happens to run from the root, but `bash scripts/repo-health.sh` from
+# inside scripts/ would silently resolve paths wrong otherwise).
+cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit 1
+
 section() {
   echo
   echo "── $1 ──"
