@@ -44,7 +44,9 @@ fi
 
 section "Gitleaks (full history scan)"
 # Periodic full-history scan, distinct from the pre-commit hook's staged-diff-only
-# scan — catches anything that predates the hook being set up.
+# scan — catches anything that predates the hook being set up. Deliberately
+# non-blocking here, like every other section in this script; the blocking,
+# on-every-push secrets check is a separate step in ci.yml.
 if command -v gitleaks >/dev/null 2>&1; then
   gitleaks detect --redact || true
 else

@@ -38,20 +38,24 @@ jobs:
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps
 
-      - name: Repo health script (Knip, pnpm audit, full E2E suite, ...)
-        run: pnpm run health
-
-      - name: Gitleaks (full history scan)
-        uses: gitleaks/gitleaks-action@v3
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Semgrep (fuller ruleset sweep)
-        continue-on-error: true
+      # Installed here (rather than as separate dedicated steps after the
+      # script) so the script's own Gitleaks/Semgrep/Bearer sections find
+      # real binaries and produce real output instead of "not installed —
+      # skipped" — the same commands the script runs locally, run once, not
+      # duplicated across a script section and a redundant Action step.
+      - name: Install security scanning CLIs (gitleaks, semgrep, bearer)
         run: |
-          docker run --rm -v "$PWD:/src" semgrep/semgrep \
-            semgrep scan --config p/javascript --config p/typescript --config p/owasp-top-ten --config p/security-audit
+          mkdir -p "$HOME/.local/bin"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
-      - name: Bearer (fuller sweep)
-        continue-on-error: true
-        uses: bearer/bearer-action@v2
+          gitleaks_url=$(curl -sSL https://api.github.com/repos/gitleaks/gitleaks/releases/latest \
+            | jq -r '.assets[] | select(.name | test("linux_x64.tar.gz$")) | .browser_download_url')
+          curl -sSL "$gitleaks_url" | tar -xz -C "$HOME/.local/bin" gitleaks
+
+          pipx install semgrep
+
+          curl -sfL https://raw.githubusercontent.com/Bearer/bearer/main/contrib/install.sh \
+            | sh -s -- -b "$HOME/.local/bin"
+
+      - name: Repo health script (Knip, pnpm audit, osv-scanner, Gitleaks, Semgrep, Bearer, full E2E suite)
+        run: pnpm run health
