@@ -1,0 +1,17 @@
+pre-commit:
+  parallel: true
+  commands:
+    lint:
+      glob: "*.{js,jsx,ts,tsx,mjs,cjs}"
+      run: pnpm exec eslint {staged_files}
+    format:
+      glob: "*.{js,jsx,ts,tsx,mjs,cjs,css,json,md}"
+      run: pnpm exec prettier --write {staged_files}
+      stage_fixed: true
+    secrets:
+      run: gitleaks protect --staged --verbose --redact
+
+pre-push:
+  commands:
+    typecheck:
+      run: pnpm nx affected -t typecheck --base=main

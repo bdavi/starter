@@ -1,0 +1,32 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "packageRules": [
+    {
+      "groupName": "Nx",
+      "matchPackageNames": ["/^@nx\\//", "/^nx$/"]
+    },
+    {
+      "groupName": "ESLint",
+      "matchPackageNames": ["/eslint/"]
+    },
+    {
+      "groupName": "Next.js & React",
+      "matchPackageNames": [
+        "/^next$/",
+        "/^react$/",
+        "/^react-dom$/",
+        "/^@types/react/"
+      ]
+    },
+    {
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["patch"],
+      "automerge": true
+    }
+  ],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 6am on monday"]
+  }
+}

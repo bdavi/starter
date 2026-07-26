@@ -1,0 +1,25 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "ignore": ["jest.preset.cjs"],
+  "ignoreDependencies": [
+    "tailwindcss",
+    "@eslint/js",
+    "eslint-config-next",
+    "eslint-plugin-jsx-a11y",
+    "eslint-plugin-react",
+    "eslint-plugin-react-hooks",
+    "jest-environment-jsdom",
+    "ts-node",
+    "typescript-eslint"
+  ],
+  "workspaces": {
+    "apps/web": {
+      "jest": false,
+      "entry": ["src/app/**/{page,layout,route,loading,error,not-found}.tsx"],
+      "project": ["src/**/*.{ts,tsx}"]
+    },
+    "apps/web-e2e": {
+      "entry": ["playwright.config.mts", "src/**/*.spec.ts"]
+    }
+  }
+}

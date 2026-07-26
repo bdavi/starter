@@ -5,7 +5,7 @@ Date: 2026-07-23
 
 ## Context
 
-Before making individual technical decisions (repo structure, language, tooling, etc.), we need a shared statement of what this project is *for*. Every later ADR should be evaluated against this document — if a decision doesn't serve these goals, that's a reason to question it.
+Before making individual technical decisions (repo structure, language, tooling, etc.), we need a shared statement of what this project is _for_. Every later ADR should be evaluated against this document — if a decision doesn't serve these goals, that's a reason to question it.
 
 ## Purpose
 
@@ -41,7 +41,7 @@ This is the central design tension: solo-dev-friendly and 50-engineer-friendly p
 ## Non-Goals (for now)
 
 - We are not optimizing for scale beyond ~50 engineers / hyperscale infrastructure. Patterns that only make sense at that scale (e.g. Bazel-style build systems, service meshes by default) should be evaluated on their own merits, not assumed necessary.
-- We are not locking in a single "correct" stack forever — part of the point is experimenting with alternatives. But the *default*/starter path should be opinionated and production-ready, not a menu of unfinished options.
+- We are not locking in a single "correct" stack forever — part of the point is experimenting with alternatives. But the _default_/starter path should be opinionated and production-ready, not a menu of unfinished options.
 
 ## Consequences
 

@@ -4,7 +4,7 @@ This folder tracks the significant technical decisions made while building this 
 
 ## Why ADRs
 
-- Future-us (or a new team member) can see *why* something is the way it is, not just that it is that way.
+- Future-us (or a new team member) can see _why_ something is the way it is, not just that it is that way.
 - Decisions get revisited as the project grows. An ADR can be superseded by a later one without deleting history.
 - Forces us to actually weigh tradeoffs instead of defaulting to "whatever's familiar."
 - These records are also included in the repo to give AI coding tools context on why the architecture is the way it is, so their suggestions stay consistent with past decisions.
@@ -36,16 +36,15 @@ What this makes easier, what this makes harder, what we're deferring or acceptin
 
 ## Index
 
-| ADR | Title | Status |
-|-----|-------|--------|
-| [00000](./00000-purpose-and-goals.md) | Project Purpose & Design Goals | Accepted |
-| [00001](./00001-monorepo-vs-polyrepo.md) | Monorepo vs Polyrepo | Accepted |
-| [00002](./00002-ai-agent-context-files.md) | AI Agent Context Files | Accepted |
-| [00003](./00003-web-app-language-and-architecture.md) | Web Application Language & Architecture | Accepted |
-| [00004](./00004-monorepo-app-and-package-structure.md) | Monorepo App & Package Structure | Accepted |
-| [00005](./00005-monorepo-build-tooling.md) | Monorepo Build Tooling | Accepted |
-| [00006](./00006-documentation-strategy.md) | Documentation Strategy | Accepted |
-| [00007](./00007-testing-and-qa-strategy.md) | Testing & QA Strategy | Accepted |
-| [00008](./00008-local-development-environment.md) | Local Development Environment | Accepted |
+| ADR                                                          | Title                                   | Status   |
+| ------------------------------------------------------------ | --------------------------------------- | -------- |
+| [00000](./00000-purpose-and-goals.md)                        | Project Purpose & Design Goals          | Accepted |
+| [00001](./00001-monorepo-vs-polyrepo.md)                     | Monorepo vs Polyrepo                    | Accepted |
+| [00002](./00002-ai-agent-context-files.md)                   | AI Agent Context Files                  | Accepted |
+| [00003](./00003-web-app-language-and-architecture.md)        | Web Application Language & Architecture | Accepted |
+| [00004](./00004-monorepo-app-and-package-structure.md)       | Monorepo App & Package Structure        | Accepted |
+| [00005](./00005-monorepo-build-tooling.md)                   | Monorepo Build Tooling                  | Accepted |
+| [00006](./00006-documentation-strategy.md)                   | Documentation Strategy                  | Accepted |
+| [00007](./00007-testing-and-qa-strategy.md)                  | Testing & QA Strategy                   | Accepted |
+| [00008](./00008-local-development-environment.md)            | Local Development Environment           | Accepted |
 | [00009](./00009-linting-formatting-and-security-scanning.md) | Linting, Formatting & Security Scanning | Accepted |
-

@@ -28,6 +28,7 @@ The question: do we keep all code in one repository (monorepo) or split it acros
 Monorepo, backed by workspace tooling (exact tool — Turborepo, Nx, or plain pnpm workspaces — is a separate ADR).
 
 Key reasons:
+
 - Easier to share context and types across frontend/backend/packages as the number of services grows.
 - Enables true end-to-end testing across services from a single checkout/CI run.
 - **AI-tooling effectiveness is an explicit design goal for this project.** Coding agents (Claude Code and similar) work significantly better with full repo context available in one place — one dependency graph, one place to search, no guessing at cross-repo contracts or juggling multiple checkouts. This is a first-class reason for the decision, not just a side benefit.

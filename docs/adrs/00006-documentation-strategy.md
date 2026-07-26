@@ -5,7 +5,7 @@ Date: 2026-07-25
 
 ## Context
 
-ADR-00000 names documented decisions (not tribal knowledge) and AI-tooling effectiveness as explicit goals. So far this repo has ADRs (`docs/adrs/`, the decision log — *why*) and `AGENTS.md` (agent operational instructions — *how*, for agents specifically). Neither of those is enough on its own: as real code and features arrive, we need a *current-state* view of the system (not just a chronological decision log), documentation for human developers that isn't just a copy of agent instructions, and a way to document feature-level behavior and value without that documentation silently going stale.
+ADR-00000 names documented decisions (not tribal knowledge) and AI-tooling effectiveness as explicit goals. So far this repo has ADRs (`docs/adrs/`, the decision log — _why_) and `AGENTS.md` (agent operational instructions — _how_, for agents specifically). Neither of those is enough on its own: as real code and features arrive, we need a _current-state_ view of the system (not just a chronological decision log), documentation for human developers that isn't just a copy of agent instructions, and a way to document feature-level behavior and value without that documentation silently going stale.
 
 Two problems recur across all of these:
 
@@ -16,7 +16,7 @@ Two problems recur across all of these:
 
 1. **Ad-hoc, unstructured docs** — whatever gets written wherever, no convention. Rejected: this is the status quo failure mode ADR-00000 already names as a risk (undocumented decisions, inconsistent patterns).
 2. **Fully centralized docs** (one `docs/` folder holding everything, disconnected from the code it describes) — easy to browse, but far from the code it documents, so it goes stale faster and doesn't scale with the monorepo's `apps/*`/`packages/*` structure.
-3. **Fully generated, nothing hand-written** — not achievable; *why* something exists and *what value* a feature provides require human judgment no generator can produce.
+3. **Fully generated, nothing hand-written** — not achievable; _why_ something exists and _what value_ a feature provides require human judgment no generator can produce.
 4. **Hybrid: generate what can be generated, hand-write only what requires judgment, single canonical source per fact, co-locate what's naturally co-located** — the approach below.
 
 ## Decision
@@ -41,7 +41,7 @@ None of these are set up yet — this records the preference, to be acted on as 
 
 ### Structure
 
-- `docs/adrs/` — decision log, *why*, historical, append-only (existing).
+- `docs/adrs/` — decision log, _why_, historical, append-only (existing).
 - `docs/architecture.md` — current-state overview, a living doc that gets edited in place (not created yet — nothing to diagram until apps/packages exist).
 - `CONTRIBUTING.md` — human PR/process norms (not created yet).
 - `README.md` / `AGENTS.md` (root) — existing, stay as the human/agent entry points respectively.
@@ -49,7 +49,7 @@ None of these are set up yet — this records the preference, to be acted on as 
 
 ### Canonical source for facts shared between agent and human docs
 
-Where agents and humans need the *same fact* (build/test/run commands, layout, conventions), it's written once and the other file points to it, rather than both restating it — the same principle already used between the ADR log and `AGENTS.md` (ADR-00002), applied one level down. Concretely: a package/app's `README.md` is canonical for "how do I build/run/test this" (humans need it spelled out with setup context regardless); its `AGENTS.md` links to that instead of repeating it, and only adds agent-specific material — behavioral guardrails or context-budget-motivated notes — that would be out of place in a human doc.
+Where agents and humans need the _same fact_ (build/test/run commands, layout, conventions), it's written once and the other file points to it, rather than both restating it — the same principle already used between the ADR log and `AGENTS.md` (ADR-00002), applied one level down. Concretely: a package/app's `README.md` is canonical for "how do I build/run/test this" (humans need it spelled out with setup context regardless); its `AGENTS.md` links to that instead of repeating it, and only adds agent-specific material — behavioral guardrails or context-budget-motivated notes — that would be out of place in a human doc.
 
 ### Feature-level documentation: split "value" from "behavior"
 

@@ -30,7 +30,7 @@ Already scaffolded ([`.tool-versions`](../../.tool-versions)): Node and pnpm ver
 
 ## Consequences
 
-- Every contributor needs *some* container runtime installed, of their own choosing — a real, if minor, environment requirement.
+- Every contributor needs _some_ container runtime installed, of their own choosing — a real, if minor, environment requirement.
 - Docker Compose here is a local-dev convenience, not a description of the production deployment — it shouldn't be assumed to double as deploy tooling without a deliberate future decision (a hosting/infra ADR).
 - The Compose file will need updating as new backing services are added over time (e.g. the eventual message broker) — expected maintenance, not a one-time task.
 - Setup docs and scripts must stick to plain `docker`/`docker compose` commands rather than assuming a specific runtime's quirks or tooling, so the choice of runtime stays genuinely free.

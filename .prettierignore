@@ -1,0 +1,9 @@
+node_modules
+dist
+build
+out-tsc
+.next
+out
+test-output
+coverage
+pnpm-lock.yaml

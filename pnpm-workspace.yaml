@@ -1,10 +1,51 @@
 packages:
-  - 'apps/*'
-  - 'packages/*'
+  - "apps/*"
+  - "packages/*"
 allowBuilds:
-  '@parcel/watcher': true
-  '@swc/core': true
+  "@parcel/watcher": true
+  "@swc/core": true
   less: false
   nx: true
   sharp: true
   unrs-resolver: true
+blockExoticSubdeps: true
+minimumReleaseAge: 10080
+trustPolicy: no-downgrade
+# Versions older than 90 days are exempt from the trust-downgrade check.
+# Investigated several flagged packages (undici-types@6.21.0, semver@6.3.1,
+# chokidar@4.0.3): all were signed with the same old npm registry key
+# (SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA), which also appears
+# on unrelated, unambiguously legitimate packages from the same era (e.g.
+# typescript@5.6.3) — consistent with npm rotating its own registry signing
+# key at some point, not individual package compromises. Whitelisting each
+# old package one-by-one isn't scalable across a ~1500-package tree; a
+# version that's been public for 90+ days without being pulled is very
+# unlikely to be the active attack this policy exists to catch.
+trustPolicyIgnoreAfter: 129600
+# All specifiers below are pinned with ^/~ to the exact version we
+# deliberately installed (no older version satisfies the range at all, so
+# this isn't "skip vetting a random new version" — it's versions we
+# ourselves just chose and already know the reason for).
+minimumReleaseAgeExclude:
+  # Deliberately upgraded to fix a real, verified CVE (Next.js DoS
+  # advisories) — see repo-health.sh findings. Waiting 7 days would mean
+  # staying on the known-vulnerable version on purpose.
+  - next@16.2.11
+  - "@next/env@16.2.11"
+  - "@next/swc-darwin-arm64@16.2.11"
+  - "@next/swc-darwin-x64@16.2.11"
+  - "@next/swc-linux-arm64-gnu@16.2.11"
+  - "@next/swc-linux-arm64-musl@16.2.11"
+  - "@next/swc-linux-x64-gnu@16.2.11"
+  - "@next/swc-linux-x64-musl@16.2.11"
+  - "@next/swc-win32-arm64-msvc@16.2.11"
+  - "@next/swc-win32-x64-msvc@16.2.11"
+  - react@19.2.8
+  - react-dom@19.2.8
+  # Fixes a real vulnerability found by osv-scanner (postcss cache-poisoning
+  # advisories, fixed at 8.5.18+).
+  - postcss@8.5.23
+  # Our own dev tooling, installed and actively verified this session, not
+  # a transitive pull of an unvetted version.
+  - prettier@3.9.6
+  - knip@6.29.0

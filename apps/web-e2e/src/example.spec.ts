@@ -1,7 +1,7 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('renders the home page', async ({ page }) => {
-  await page.goto('/');
+test("renders the home page", async ({ page }) => {
+  await page.goto("/");
 
-  await expect(page.locator('h1')).toHaveText('Hello, world');
+  await expect(page.locator("h1")).toHaveText("Hello, world");
 });

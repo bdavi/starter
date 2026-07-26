@@ -7,7 +7,7 @@ Date: 2026-07-23
 
 ADR-00000 names AI-tooling effectiveness as an explicit, first-class design goal — coding agents should be able to navigate this repo, understand context, and make safe changes, not just humans. ADR-00001 chose a monorepo partly for the same reason: one place for agents to find full context.
 
-Right now the repo has no dedicated file telling an agent *how* to work here — build/test commands, coding conventions, directory boundaries. The ADR log documents *why* decisions were made, not operational instructions, and agents shouldn't have to infer conventions from scratch each session.
+Right now the repo has no dedicated file telling an agent _how_ to work here — build/test commands, coding conventions, directory boundaries. The ADR log documents _why_ decisions were made, not operational instructions, and agents shouldn't have to infer conventions from scratch each session.
 
 We want a format that works across multiple AI coding tools (Claude Code today, potentially others later), not one tied to a single vendor.
 
@@ -37,7 +37,7 @@ A root `AGENTS.md` is added now, but scoped to only what's already true (purpose
 
 We commit now to the community-standard **nested convention**: once `apps/*` and `packages/*` contain real packages, each gets its own `AGENTS.md` describing that package's build/test/run commands and conventions, with agents using the nearest `AGENTS.md` to the file being edited. Deciding this now avoids re-litigating it when the first app/package is added.
 
-Content split going forward: `docs/adrs/` remains the record of *why* (decision rationale); `AGENTS.md` is the record of *how* (operational instructions). `AGENTS.md` should link back to the ADR log rather than duplicating rationale, so the two don't drift apart.
+Content split going forward: `docs/adrs/` remains the record of _why_ (decision rationale); `AGENTS.md` is the record of _how_ (operational instructions). `AGENTS.md` should link back to the ADR log rather than duplicating rationale, so the two don't drift apart.
 
 ## Consequences
 

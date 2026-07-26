@@ -5,12 +5,27 @@
   "nx": {
     "tags": [
       "type:app"
-    ]
+    ],
+    "targets": {
+      "typecheck": {
+        "cache": true,
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "apps/web",
+          "command": "tsc --noEmit -p tsconfig.json"
+        },
+        "inputs": [
+          "default",
+          "^default"
+        ],
+        "outputs": []
+      }
+    }
   },
   "dependencies": {
-    "next": "~16.1.6",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "next": "~16.2.11",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",

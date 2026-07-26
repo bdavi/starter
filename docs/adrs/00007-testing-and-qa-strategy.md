@@ -5,7 +5,7 @@ Date: 2026-07-25
 
 ## Context
 
-ADR-00006 decided that feature *behavior* documentation should be backed by automated acceptance tests rather than prose, specifically to avoid the same drift problem as everything else in that ADR. This ADR is where that principle becomes an actual testing strategy, alongside the more general question of what QA looks like in this repo.
+ADR-00006 decided that feature _behavior_ documentation should be backed by automated acceptance tests rather than prose, specifically to avoid the same drift problem as everything else in that ADR. This ADR is where that principle becomes an actual testing strategy, alongside the more general question of what QA looks like in this repo.
 
 ADR-00000 wants production-grade quality without excess ceremony at solo-dev scale — the testing strategy needs to hold up as the team grows without being overbuilt on day one, when there's no code to test yet.
 
@@ -38,7 +38,7 @@ A bug fix includes a regression test as a matter of course — the test is the r
 
 ### Extensive, comprehensive testing is required — without a numeric gate
 
-This project has a strong, explicit commitment to automated testing: meaningful code — business logic especially, but not only — is expected to be thoroughly tested, covering main paths *and* edge/error cases, not just enough to satisfy a metric. This is a real requirement, not an aspiration to be traded off under time pressure.
+This project has a strong, explicit commitment to automated testing: meaningful code — business logic especially, but not only — is expected to be thoroughly tested, covering main paths _and_ edge/error cases, not just enough to satisfy a metric. This is a real requirement, not an aspiration to be traded off under time pressure.
 
 Deliberately not expressed as a numeric coverage percentage gate: coverage percentage measures how much code ran during tests, not whether that code's behavior was actually verified, so it's an imperfect proxy for the thing we actually care about. The bar here is whether behavior is genuinely verified, which is a judgment call made in review — coverage tooling can inform that judgment (e.g. flagging untested files worth a second look), but isn't a substitute for it. Worth stating explicitly so a coverage-percentage gate doesn't quietly become the de facto standard in its place without someone deciding to make that tradeoff deliberately.
 
