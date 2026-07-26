@@ -31,12 +31,27 @@ lefthook install
 Run tasks via Nx, always prefixed with `pnpm` (not a global `nx` install):
 
 ```
-pnpm nx dev web      # start the dev server
-pnpm nx build web     # production build
-pnpm nx test web      # unit tests (Jest)
-pnpm nx lint web      # lint
-pnpm nx show projects # list everything in the workspace
+pnpm nx dev web           # start the dev server
+pnpm nx build web         # production build
+pnpm nx test web          # unit tests (Jest)
+pnpm nx lint web          # lint
+pnpm nx typecheck web     # tsc --noEmit
+pnpm nx e2e web-e2e       # e2e tests (Playwright) — see apps/web-e2e/README.md
+pnpm nx show projects     # list everything in the workspace
 ```
+
+Repo-wide scripts:
+
+```
+pnpm run format        # format the whole repo with Prettier
+pnpm run format:check  # check formatting without writing
+pnpm run health         # repo health report — Knip, pnpm audit, osv-scanner,
+                        # Gitleaks, Semgrep, Bearer, and the full e2e suite
+                        # (see ADR-00009); non-blocking, for review, uses
+                        # whichever of those tools are installed
+```
+
+CI (`.github/workflows/ci.yml`) runs on every push/PR: format check, lint, typecheck, unit tests, build, a critical-path e2e smoke test, and a secrets scan. A separate scheduled workflow (`repo-health.yml`, weekly + on demand) runs `pnpm run health` — the fuller, non-blocking checks, including the full e2e suite. Renovate is installed and keeps dependencies up to date automatically.
 
 ## Architecture Decision Records
 

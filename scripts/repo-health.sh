@@ -65,5 +65,12 @@ else
   echo "bearer not installed locally — skipped. See https://docs.bearer.com/"
 fi
 
+section "E2E (full suite — ADR-00007)"
+# All tests, all browsers — distinct from the small @critical-tagged subset
+# that runs on every push in ci.yml. Needs Playwright's browser binaries
+# installed (`pnpm exec playwright install`, or `--with-deps` in CI); if
+# they're missing, Playwright's own error message below says so.
+pnpm nx e2e web-e2e || true
+
 echo
 echo "Repo health check complete. Findings above are informational — review, don't panic."

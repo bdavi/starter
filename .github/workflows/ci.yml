@@ -43,6 +43,15 @@ jobs:
       - name: Build
         run: pnpm nx affected -t build
 
+      - name: Install Playwright browsers (chromium only — critical path is fast by design)
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: E2E (critical path)
+        # ADR-00007: a small, always-run, blocking suite — not the full one.
+        # Tag anything that must never break with @critical; everything else
+        # only runs in the full on-demand suite (see repo-health.yml).
+        run: pnpm nx e2e web-e2e -- --grep @critical --project=chromium
+
       - name: Secrets scan (Gitleaks)
         uses: gitleaks/gitleaks-action@v3
         env:

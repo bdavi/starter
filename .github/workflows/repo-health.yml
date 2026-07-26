@@ -35,7 +35,10 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Repo health script (Knip, pnpm audit)
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps
+
+      - name: Repo health script (Knip, pnpm audit, full E2E suite, ...)
         run: pnpm run health
 
       - name: Gitleaks (full history scan)
