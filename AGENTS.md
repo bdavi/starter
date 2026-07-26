@@ -11,7 +11,7 @@ A reusable starter template for building SaaS products. Full purpose and design 
 This is a monorepo ([ADR-00001](./docs/adrs/00001-monorepo-vs-polyrepo.md)):
 
 - `docs/adrs/` — Architecture Decision Records, in chronological order. Read the relevant ones before making structural changes.
-- `apps/web` — customer-facing product (Next.js, colocated backend) — not yet scaffolded. See [ADR-00003](./docs/adrs/00003-web-app-language-and-architecture.md).
+- `apps/web` — customer-facing product (Next.js, App Router, colocated backend). Scaffolded via `@nx/next`: Jest for unit tests, Playwright for e2e (`apps/web-e2e`), ESLint, Tailwind CSS v4 (`@import "tailwindcss"` in `src/app/global.css`, config in `postcss.config.mjs`). See [ADR-00003](./docs/adrs/00003-web-app-language-and-architecture.md).
 - `apps/worker` — background/async job processor (TypeScript) — not yet scaffolded.
 - `apps/admin` — internal admin tooling, separate deployable from `apps/web` — not yet scaffolded.
 - `apps/mobile` — planned, not yet built: React Native via Expo, once a native app is actually needed.
@@ -21,7 +21,9 @@ This is a monorepo ([ADR-00001](./docs/adrs/00001-monorepo-vs-polyrepo.md)):
 
 Stack decided: TypeScript throughout, pnpm workspaces + Nx for the monorepo, Next.js for `apps/web` (see [ADR-00003](./docs/adrs/00003-web-app-language-and-architecture.md), [ADR-00004](./docs/adrs/00004-monorepo-app-and-package-structure.md), [ADR-00005](./docs/adrs/00005-monorepo-build-tooling.md)).
 
-**The workspace itself is scaffolded**: root `package.json`, `pnpm-workspace.yaml`, and Nx (`nx.json`) are set up. Run tasks via `pnpm nx <command>` (not a global `nx` install). **No apps or packages exist yet** — `apps/web`, `apps/worker`, etc. are still just directories described in ADR-00004, not real projects. Do not assume or invent build/test/lint commands for a specific app/package until it's actually been scaffolded; check `pnpm nx show projects` before claiming a command exists.
+**The workspace is scaffolded**: root `package.json`, `pnpm-workspace.yaml`, and Nx (`nx.json`) are set up. Run tasks via `pnpm nx <command>` (not a global `nx` install). **`apps/web` is scaffolded** (Next.js, Jest, Playwright, ESLint) — build/lint/test all pass. `apps/worker`, `apps/admin`, `apps/mobile`, and all `packages/*` do not exist yet. Do not assume or invent build/test/lint commands for a specific app/package until it's actually been scaffolded; check `pnpm nx show projects` before claiming a command exists.
+
+Known issue: `nx build web` does not currently hit cache on an unchanged rerun (likely `apps/web/tsconfig.json`'s `include` of `.next/types/**/*.ts`, regenerated every build, feeding back into the build's own input hash). `test` and `lint` cache correctly. Not yet fixed — worth investigating before relying on build caching for CI speed.
 
 Required Node and pnpm versions are pinned in `.tool-versions` (the portable format shared by both [asdf](https://asdf-vm.com/) and [mise](https://mise.jdx.dev/) — use whichever you prefer, neither is mandated).
 
