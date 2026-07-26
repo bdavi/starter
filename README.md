@@ -21,7 +21,9 @@ Install [Node and pnpm](./.tool-versions) (via [asdf](https://asdf-vm.com/) or [
 - [lefthook](https://github.com/evilmartians/lefthook) for git hooks (Homebrew, npm/pnpm global, a Go install, or an asdf/mise-managed tool)
 - [gitleaks](https://github.com/gitleaks/gitleaks) for secret scanning (Homebrew, a downloaded binary, or Docker) — the pre-commit hook hard-fails if it isn't installed, by design (see [ADR-00009](./docs/adrs/00009-linting-formatting-and-security-scanning.md): secrets scanning always blocks)
 
-Then, once both are installed:
+Optional: [zizmor](https://docs.zizmor.sh/installation/) (pip/pipx, Homebrew, or Cargo) gives the pre-push hook a fast local check that GitHub Actions refs stay SHA-pinned (see [ADR-00010](./docs/adrs/00010-github-actions-supply-chain-hardening.md)). Not required — if it's missing, the hook just skips that check and prints a note; CI's `zizmor` job enforces it regardless.
+
+Then, once both required tools are installed:
 
 ```
 pnpm install

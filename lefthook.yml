@@ -15,3 +15,13 @@ pre-push:
   commands:
     typecheck:
       run: pnpm nx affected -t typecheck --base=main
+    workflow-pinning:
+      # Fast local feedback for ADR-00010's SHA-pinning rule — CI's zizmor
+      # job is the actual enforcement (it runs regardless of whether this
+      # is installed), so skip gracefully rather than blocking the push.
+      run: |
+        if command -v zizmor >/dev/null 2>&1; then
+          zizmor .github/workflows/
+        else
+          echo "zizmor not installed locally — skipping the pre-push Actions-pinning check (CI still enforces it). See https://docs.zizmor.sh/installation/"
+        fi
