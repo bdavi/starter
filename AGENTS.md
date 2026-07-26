@@ -25,6 +25,8 @@ Stack decided: TypeScript throughout, pnpm workspaces + Nx for the monorepo, Nex
 
 Nx's caching is content-hash-based and does work correctly (verified: identical content reliably cache-hits). `lint` and `test` cache reliably across runs. `build` has shown occasional extra rebuilds in some multi-command sequences during testing that weren't cleanly reproducible or root-caused — performance/DX only, not a correctness issue. Worth another look if it becomes a real CI-speed problem, not urgent otherwise.
 
+Linting/formatting/security scanning strategy decided (see [ADR-00009](./docs/adrs/00009-linting-formatting-and-security-scanning.md)): lefthook for git hooks (pre-commit vs. pre-push split), Prettier + prettier-plugin-tailwindcss, eslint-plugin-sonarjs/import-x/security, Semgrep + Bearer, Gitleaks, osv-scanner, Renovate, and Knip (warn-only) feeding a planned "repo health script" for non-blocking checks. **Not implemented yet** — no lefthook config, no additional ESLint plugins installed beyond what `@nx/next` scaffolded, no repo health script exists in this repo at this time.
+
 Required Node and pnpm versions are pinned in `.tool-versions` (the portable format shared by both [asdf](https://asdf-vm.com/) and [mise](https://mise.jdx.dev/) — use whichever you prefer, neither is mandated).
 
 Local dev environment decided (see [ADR-00008](./docs/adrs/00008-local-development-environment.md)): Docker Compose for backing services (Postgres, Redis, etc.) only — apps run natively via `nx run-many -t dev`, not in containers. Not scaffolded yet: no `docker-compose.yml`, dev script, or reset script exists in this repo at this time.

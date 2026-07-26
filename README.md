@@ -16,7 +16,7 @@ This is a monorepo (see [ADR-00001](./docs/adrs/00001-monorepo-vs-polyrepo.md)),
 
 ## Getting started
 
-Install [Node and pnpm](./.tool-versions) (via [asdf](https://asdf-vm.com/) or [mise](https://mise.jdx.dev/), your choice), then:
+Install [Node and pnpm](./.tool-versions) (via [asdf](https://asdf-vm.com/) or [mise](https://mise.jdx.dev/), your choice), plus [lefthook](https://github.com/evilmartians/lefthook) for git hooks — it has several install paths (Homebrew, npm/pnpm global, a Go install, or as an asdf/mise-managed tool); pick whichever fits your setup. Then:
 
 ```
 pnpm install

@@ -47,4 +47,5 @@ What this makes easier, what this makes harder, what we're deferring or acceptin
 | [00006](./00006-documentation-strategy.md) | Documentation Strategy | Accepted |
 | [00007](./00007-testing-and-qa-strategy.md) | Testing & QA Strategy | Accepted |
 | [00008](./00008-local-development-environment.md) | Local Development Environment | Accepted |
+| [00009](./00009-linting-formatting-and-security-scanning.md) | Linting, Formatting & Security Scanning | Accepted |
 
