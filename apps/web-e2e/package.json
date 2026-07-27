@@ -5,6 +5,9 @@
   "nx": {
     "implicitDependencies": [
       "web"
+    ],
+    "tags": [
+      "type:app"
     ]
   }
 }

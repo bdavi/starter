@@ -29,6 +29,13 @@ jobs:
 
       - uses: nrwl/nx-set-shas@afb73a62d26e41464e9254689e1fd6122ee683c1 # v5.0.1
 
+      - name: Dependency version consistency (Syncpack)
+        # ADR-00004: cross-package version drift (e.g. two packages on
+        # different zod versions) risks duplicate runtime instances of
+        # singleton libraries and structural type incompatibilities.
+        # Deterministic, no false-positive judgment call — blocking.
+        run: pnpm run deps:check
+
       - name: Format check
         run: pnpm run format:check
 

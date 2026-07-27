@@ -140,10 +140,34 @@ export default [
         {
           enforceBuildableLibDependency: true,
           allow: ["^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$"],
+          // Minimal, unambiguous constraints (ADR-00004: "apps are thin,
+          // packages hold the logic"):
+          //   - a package must never depend on an app, regardless of which
+          //     packages/apps exist.
+          //   - an app must never depend on another app either — verified
+          //     empirically that nothing currently relies on this (checked
+          //     whether apps/web-e2e's `implicitDependencies: ["web"]`
+          //     meant an actual code import; it doesn't — Playwright starts
+          //     web's dev server as a separate process and hits it over
+          //     HTTP, that field is purely for Nx's task graph). Per
+          //     ADR-00003, "apps/web's internal data-loading functions are
+          //     not a public contract" — if two apps ever need to share
+          //     something, it belongs in a package (a real, typed,
+          //     documented contract), not a direct app-to-app import.
+          // Deliberately not going further into finer-grained layering
+          // between individual packages (e.g. "domain can't import db
+          // directly") — those packages don't exist yet, and guessing at
+          // that boundary before there's real code to test it against
+          // would be exactly the kind of premature constraint ADR-00000
+          // warns against.
           depConstraints: [
             {
-              sourceTag: "*",
-              onlyDependOnLibsWithTags: ["*"],
+              sourceTag: "type:lib",
+              onlyDependOnLibsWithTags: ["type:lib"],
+            },
+            {
+              sourceTag: "type:app",
+              onlyDependOnLibsWithTags: ["type:lib"],
             },
           ],
         },

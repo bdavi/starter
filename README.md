@@ -62,9 +62,10 @@ pnpm run health         # repo health report — Knip, pnpm audit, osv-scanner,
 pnpm run db:generate    # drizzle-kit generate — SQL migration from schema changes
 pnpm run db:migrate     # drizzle-kit migrate — apply pending migrations
 pnpm run db:reset       # drop + recreate local Postgres, re-migrate
+pnpm run deps:check     # syncpack lint — cross-package dependency version drift
 ```
 
-CI (`.github/workflows/ci.yml`) runs on every push/PR: format check, lint, typecheck, unit tests, build, a critical-path e2e smoke test, and a secrets scan. A separate scheduled workflow (`repo-health.yml`, weekly + on demand) runs `pnpm run health` — the fuller, non-blocking checks, including the full e2e suite. Renovate is installed and keeps dependencies up to date automatically. See [`docs/scanning-tools.md`](./docs/scanning-tools.md) for the full current list of linting/security/CI-supply-chain tools, what each checks, and whether it blocks.
+CI (`.github/workflows/ci.yml`) runs on every push/PR: dependency version consistency (Syncpack), format check, lint, typecheck, unit tests, build, a critical-path e2e smoke test, and a secrets scan. A separate scheduled workflow (`repo-health.yml`, weekly + on demand) runs `pnpm run health` — the fuller, non-blocking checks, including the full e2e suite. Renovate is installed and keeps dependencies up to date automatically. See [`docs/scanning-tools.md`](./docs/scanning-tools.md) for the full current list of linting/security/CI-supply-chain tools, what each checks, and whether it blocks.
 
 ## Architecture Decision Records
 

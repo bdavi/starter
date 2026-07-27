@@ -1,0 +1,29 @@
+# ADR-00014: Maximalist Linting Strategy for AI-Agent-Driven Development
+
+Status: Accepted
+Date: 2026-07-27
+
+## Context
+
+Across ADR-00009 through ADR-00013, this repo has repeatedly converted a documented convention into a mechanically-enforced one rather than leaving it as prose: `no-process-env` for ADR-00013's env-scoping rule, a targeted `no-restricted-syntax` selector for ADR-00011's `.js`-extension regression, `server-only` for ADR-00012's client/server split, tightened `@nx/enforce-module-boundaries` for ADR-00004's "apps are thin" principle. This kept happening as a side effect of specific decisions rather than being named as a general policy. It's worth stating the policy directly, because the reasoning behind it is specific to how this repo actually gets built, not a generic "more linting is good" preference.
+
+**A convention that exists only as prose is one bad context window away from being silently violated.** ADR-00000 already names AI-tooling effectiveness as a first-class goal, and this repo is built almost entirely through AI-agent-driven sessions. A human engineer who works in a codebase for months accumulates tacit memory — they remember the time they broke the build by adding a `.js` extension, and that memory persists and shapes their instincts going forward. An AI agent's session-to-session memory doesn't work that way: each session reconstructs context from `AGENTS.md`, `README.md`, and the ADR log rather than carrying forward lived experience. A rule that's written down but not enforced relies on that reconstruction being complete and the agent actually reading the relevant file before touching the relevant code — a real gap, not a hypothetical one, since this exact gap already produced a real regression once (the `.js`-extension bug that broke `packages/config`/`db`/`auth`'s consumption by Next.js). A lint rule closes that gap categorically: the agent gets the correction immediately, from the tool, in the same turn it made the mistake — not from a human reviewer days later, and not by having successfully recalled a sentence from a file it may or may not have re-read.
+
+## Options Considered
+
+1. **Minimal linting** (add a rule only when the cost/benefit is unambiguous on its own merits) — lower tooling surface and less risk of rule fatigue or false-positive noise, but leans on documentation and review discipline to catch convention violations — precisely the failure mode described above, and more fragile here than in a typical human-only team for the reason given.
+2. **Maximalist linting** (default to adding a mechanical check whenever a convention is realistically checkable, treating "we wrote it in an ADR" as an incomplete answer to "how do we make sure this keeps being true") — more tooling surface and some ongoing tuning cost, but converts "hope the agent remembers" into "the agent gets immediate, actionable feedback in-loop." Chosen.
+3. **Enforce only security/correctness-critical conventions, leave architectural/stylistic ones as documentation** — a reasonable default for many teams, and the one this repo would probably have picked without ADR-00000's specific AI-tooling framing. Rejected as this repo's default specifically because of that framing — the module-boundary and `.js`-extension rules aren't security-critical, but they're exactly the class of mistake an agent working from incomplete context is likely to repeat.
+
+## Decision
+
+**(2).** When establishing a new convention — an ADR, a nested `AGENTS.md` entry, a correction mid-session — explicitly ask whether it's mechanically checkable (a lint rule, a config constraint, a CI check) before accepting "it's documented" as sufficient. This is now stated directly as a convention in the root `AGENTS.md`. If a check exists or is added, it's recorded in `docs/scanning-tools.md` in the same commit, per that file's own existing convention. If a convention genuinely isn't checkable, or the cost of checking it isn't worth the payoff, that's a fine outcome — but it should be a stated judgment call in the relevant ADR's Consequences, not a default.
+
+This doesn't relax the bar for adding a rule to "any rule that could conceivably apply" — false-positive-prone or purely stylistic checks are still weighed against real cost (ADR-00009 already declines Semgrep/Bearer as blocking for exactly this reason). What changes is the default posture: for a convention this repo actually wants held, "add the check" is the default to argue away from, not the exception to argue for.
+
+## Consequences
+
+- More ESLint plugins/rules and config surface to maintain over time, and some rules will need tuning after a false positive surfaces — this already happened twice in the same session these rules were added (`import-x/extensions` didn't actually catch the case it was configured for and was replaced with a `no-restricted-syntax` selector after empirical verification; an allowlist-based `transformIgnorePatterns` for `better-auth`'s ESM dependency tree was abandoned after the third distinct package surfaced one at a time). Verify a new rule actually does what it's meant to — by deliberately reintroducing the violation it's supposed to catch — before trusting it, not just checking that the happy path still passes.
+- Lint run time grows as rules accumulate; acceptable given Nx's caching keeps this fast for unaffected code, but worth revisiting if it ever stops being true.
+- This is a policy about _mechanically checkable_ conventions specifically. It doesn't extend to things that genuinely require judgment (architectural taste, when Semgrep/Bearer's false-positive rate is low enough to promote to blocking) — those stay human/agent judgment calls recorded in ADRs, same as before.
+- Root `AGENTS.md` already carries the operational version of this policy (added alongside this ADR); this ADR is the record of _why_, so the instruction in `AGENTS.md` doesn't read as an arbitrary process step.

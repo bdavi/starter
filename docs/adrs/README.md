@@ -36,19 +36,20 @@ What this makes easier, what this makes harder, what we're deferring or acceptin
 
 ## Index
 
-| ADR                                                          | Title                                   | Status   |
-| ------------------------------------------------------------ | --------------------------------------- | -------- |
-| [00000](./00000-purpose-and-goals.md)                        | Project Purpose & Design Goals          | Accepted |
-| [00001](./00001-monorepo-vs-polyrepo.md)                     | Monorepo vs Polyrepo                    | Accepted |
-| [00002](./00002-ai-agent-context-files.md)                   | AI Agent Context Files                  | Accepted |
-| [00003](./00003-web-app-language-and-architecture.md)        | Web Application Language & Architecture | Accepted |
-| [00004](./00004-monorepo-app-and-package-structure.md)       | Monorepo App & Package Structure        | Accepted |
-| [00005](./00005-monorepo-build-tooling.md)                   | Monorepo Build Tooling                  | Accepted |
-| [00006](./00006-documentation-strategy.md)                   | Documentation Strategy                  | Accepted |
-| [00007](./00007-testing-and-qa-strategy.md)                  | Testing & QA Strategy                   | Accepted |
-| [00008](./00008-local-development-environment.md)            | Local Development Environment           | Accepted |
-| [00009](./00009-linting-formatting-and-security-scanning.md) | Linting, Formatting & Security Scanning | Accepted |
-| [00010](./00010-github-actions-supply-chain-hardening.md)    | GitHub Actions Supply-Chain Hardening   | Accepted |
-| [00011](./00011-database-technology.md)                      | Database Technology                     | Accepted |
-| [00012](./00012-authentication-architecture.md)              | Authentication Architecture             | Accepted |
-| [00013](./00013-environment-config-scoping.md)               | Environment Config Scoping              | Accepted |
+| ADR                                                             | Title                                                       | Status   |
+| --------------------------------------------------------------- | ----------------------------------------------------------- | -------- |
+| [00000](./00000-purpose-and-goals.md)                           | Project Purpose & Design Goals                              | Accepted |
+| [00001](./00001-monorepo-vs-polyrepo.md)                        | Monorepo vs Polyrepo                                        | Accepted |
+| [00002](./00002-ai-agent-context-files.md)                      | AI Agent Context Files                                      | Accepted |
+| [00003](./00003-web-app-language-and-architecture.md)           | Web Application Language & Architecture                     | Accepted |
+| [00004](./00004-monorepo-app-and-package-structure.md)          | Monorepo App & Package Structure                            | Accepted |
+| [00005](./00005-monorepo-build-tooling.md)                      | Monorepo Build Tooling                                      | Accepted |
+| [00006](./00006-documentation-strategy.md)                      | Documentation Strategy                                      | Accepted |
+| [00007](./00007-testing-and-qa-strategy.md)                     | Testing & QA Strategy                                       | Accepted |
+| [00008](./00008-local-development-environment.md)               | Local Development Environment                               | Accepted |
+| [00009](./00009-linting-formatting-and-security-scanning.md)    | Linting, Formatting & Security Scanning                     | Accepted |
+| [00010](./00010-github-actions-supply-chain-hardening.md)       | GitHub Actions Supply-Chain Hardening                       | Accepted |
+| [00011](./00011-database-technology.md)                         | Database Technology                                         | Accepted |
+| [00012](./00012-authentication-architecture.md)                 | Authentication Architecture                                 | Accepted |
+| [00013](./00013-environment-config-scoping.md)                  | Environment Config Scoping                                  | Accepted |
+| [00014](./00014-maximalist-linting-for-ai-agent-development.md) | Maximalist Linting Strategy for AI-Agent-Driven Development | Accepted |

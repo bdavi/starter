@@ -1,6 +1,13 @@
 packages:
   - "apps/*"
   - "packages/*"
+# ADR-00004 named this as the prevention-side mitigation for cross-package
+# dependency-version drift (Syncpack, added alongside, is the detection-side
+# safety net for everything not yet in a catalog entry). Add an entry here
+# once a dependency is genuinely shared by more than one package/app —
+# not preemptively for deps only one project currently uses.
+catalog:
+  zod: ^4.4.3
 allowBuilds:
   "@parcel/watcher": true
   # @better-auth/cli's optional support for adapters we don't use (we're
