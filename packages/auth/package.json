@@ -35,6 +35,7 @@
     "@starter/config": "workspace:*",
     "@starter/db": "workspace:*",
     "better-auth": "^1.6.23",
+    "server-only": "^0.0.1",
     "zod": "^4.4.3"
   },
   "devDependencies": {

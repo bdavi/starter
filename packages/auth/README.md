@@ -4,7 +4,7 @@ Authentication via [Better Auth](https://www.better-auth.com/), on Postgres/Driz
 
 ## Usage
 
-Two separate subpaths — **not** one combined export, on purpose (a single barrel would leak server-only secrets/DB access into client bundles):
+Two separate subpaths — **not** one combined export, on purpose (a single barrel would leak server-only secrets/DB access into client bundles). This is a hard build failure, not just a convention: `server.ts` imports the [`server-only`](https://www.npmjs.com/package/server-only) marker package, so Next.js's build itself throws if any client component ever imports `@starter/auth/server`, directly or transitively.
 
 ```ts
 // Server-only: route handlers, Server Components, proxy/middleware
