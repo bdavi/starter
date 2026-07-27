@@ -9,6 +9,8 @@
     "eslint-plugin-react",
     "eslint-plugin-react-hooks",
     "jest-environment-jsdom",
+    "jest-environment-node",
+    "@swc/jest",
     "ts-node",
     "typescript-eslint"
   ],
@@ -20,6 +22,19 @@
     },
     "apps/web-e2e": {
       "entry": ["playwright.config.mts", "src/**/*.spec.ts"]
+    },
+    "packages/config": {
+      "jest": false,
+      "project": ["src/**/*.ts"]
+    },
+    "packages/db": {
+      "jest": false,
+      "drizzle": false,
+      "project": ["src/**/*.ts"]
+    },
+    "packages/auth": {
+      "jest": false,
+      "project": ["src/**/*.ts"]
     }
   }
 }

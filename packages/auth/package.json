@@ -1,0 +1,43 @@
+{
+  "name": "@starter/auth",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./server": {
+      "types": "./src/lib/server.ts",
+      "import": "./src/lib/server.ts",
+      "default": "./src/lib/server.ts"
+    },
+    "./client": {
+      "types": "./src/lib/client.ts",
+      "import": "./src/lib/client.ts",
+      "default": "./src/lib/client.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "nx": {
+    "name": "auth",
+    "tags": [
+      "type:lib"
+    ],
+    "targets": {
+      "auth-schema": {
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "packages/auth",
+          "command": "pnpm exec better-auth generate --config ./src/lib/server.ts --output ../db/src/lib/schema.ts --y"
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "@starter/config": "workspace:*",
+    "@starter/db": "workspace:*",
+    "better-auth": "^1.6.23",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@better-auth/cli": "^1.4.21"
+  }
+}

@@ -8,6 +8,15 @@
     },
     {
       "path": "./apps/web"
+    },
+    {
+      "path": "./packages/config"
+    },
+    {
+      "path": "./packages/db"
+    },
+    {
+      "path": "./packages/auth"
     }
   ]
 }

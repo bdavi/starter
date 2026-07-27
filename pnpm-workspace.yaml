@@ -3,7 +3,15 @@ packages:
   - "packages/*"
 allowBuilds:
   "@parcel/watcher": true
+  # @better-auth/cli's optional support for adapters we don't use (we're
+  # Postgres + Drizzle only, per ADR-00011) — no need to build their native
+  # binaries/engines.
+  "@prisma/client": false
   "@swc/core": true
+  better-sqlite3: false
+  # Postinstall just fetches the correct platform binary — standard,
+  # well-known package (drizzle-kit's transitive dependency).
+  esbuild: true
   less: false
   nx: true
   sharp: true

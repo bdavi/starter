@@ -12,22 +12,30 @@ This is a monorepo (see [ADR-00001](./docs/adrs/00001-monorepo-vs-polyrepo.md)),
 - `apps/worker` — background/async job processing. Not yet scaffolded.
 - `apps/admin` — internal admin tooling. Not yet scaffolded.
 - `apps/mobile` — planned (React Native / Expo), once a native app is actually needed.
-- `packages/*` — shared logic (data access, domain rules, validation schemas, UI components, etc.) that the apps above are thin orchestration layers around. None exist yet.
+- `packages/config` — a reusable Zod-backed validated-env-getter helper (not an aggregator of every env var — each package that needs specific vars owns and validates its own schema with it). Scaffolded.
+- `packages/db` — Postgres + Drizzle: client, schema, migrations. Scaffolded.
+- `packages/auth` — authentication (Better Auth). Scaffolded.
+- Remaining `packages/*` (domain rules, validation schemas, UI components, etc.) — planned, not yet built.
 
 ## Getting started
 
-Install [Node and pnpm](./.tool-versions) (via [asdf](https://asdf-vm.com/) or [mise](https://mise.jdx.dev/), your choice), plus two required tools with no single install path — pick whichever fits your setup:
+Install [Node and pnpm](./.tool-versions) (via [asdf](https://asdf-vm.com/) or [mise](https://mise.jdx.dev/), your choice), a container runtime for Postgres ([ADR-00008](./docs/adrs/00008-local-development-environment.md) — plain `docker`/`docker compose` CLI, any underlying runtime), plus two required tools with no single install path — pick whichever fits your setup:
 
 - [lefthook](https://github.com/evilmartians/lefthook) for git hooks (Homebrew, npm/pnpm global, a Go install, or an asdf/mise-managed tool)
 - [gitleaks](https://github.com/gitleaks/gitleaks) for secret scanning (Homebrew, a downloaded binary, or Docker) — the pre-commit hook hard-fails if it isn't installed, by design (see [ADR-00009](./docs/adrs/00009-linting-formatting-and-security-scanning.md): secrets scanning always blocks)
 
 Optional: [zizmor](https://docs.zizmor.sh/installation/) (pip/pipx, Homebrew, or Cargo) gives the pre-push hook a fast local check that GitHub Actions refs stay SHA-pinned (see [ADR-00010](./docs/adrs/00010-github-actions-supply-chain-hardening.md)). Not required — if it's missing, the hook just skips that check and prints a note; CI's `zizmor` job enforces it regardless.
 
-Then, once both required tools are installed:
+Then:
 
 ```
 pnpm install
 lefthook install
+docker compose up -d       # starts Postgres
+cp .env.example .env       # fill in DATABASE_URL (matches the compose defaults),
+                            # BETTER_AUTH_SECRET (generate: pnpm exec better-auth secret),
+                            # BETTER_AUTH_URL
+pnpm run db:migrate         # creates the database schema
 ```
 
 Run tasks via Nx, always prefixed with `pnpm` (not a global `nx` install):
@@ -51,6 +59,9 @@ pnpm run health         # repo health report — Knip, pnpm audit, osv-scanner,
                         # Gitleaks, Semgrep, Bearer, and the full e2e suite
                         # (see ADR-00009); non-blocking, for review, uses
                         # whichever of those tools are installed
+pnpm run db:generate    # drizzle-kit generate — SQL migration from schema changes
+pnpm run db:migrate     # drizzle-kit migrate — apply pending migrations
+pnpm run db:reset       # drop + recreate local Postgres, re-migrate
 ```
 
 CI (`.github/workflows/ci.yml`) runs on every push/PR: format check, lint, typecheck, unit tests, build, a critical-path e2e smoke test, and a secrets scan. A separate scheduled workflow (`repo-health.yml`, weekly + on demand) runs `pnpm run health` — the fuller, non-blocking checks, including the full e2e suite. Renovate is installed and keeps dependencies up to date automatically. See [`docs/scanning-tools.md`](./docs/scanning-tools.md) for the full current list of linting/security/CI-supply-chain tools, what each checks, and whether it blocks.

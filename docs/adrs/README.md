@@ -49,3 +49,6 @@ What this makes easier, what this makes harder, what we're deferring or acceptin
 | [00008](./00008-local-development-environment.md)            | Local Development Environment           | Accepted |
 | [00009](./00009-linting-formatting-and-security-scanning.md) | Linting, Formatting & Security Scanning | Accepted |
 | [00010](./00010-github-actions-supply-chain-hardening.md)    | GitHub Actions Supply-Chain Hardening   | Accepted |
+| [00011](./00011-database-technology.md)                      | Database Technology                     | Accepted |
+| [00012](./00012-authentication-architecture.md)              | Authentication Architecture             | Accepted |
+| [00013](./00013-environment-config-scoping.md)               | Environment Config Scoping              | Accepted |

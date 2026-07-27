@@ -23,8 +23,10 @@ pnpm nx typecheck web   # tsc --noEmit
 ## Layout
 
 - `src/app/` — App Router pages/layouts/routes. Files here are auto-discovered by Next.js's file-based routing — nothing imports them explicitly.
+- `src/app/api/auth/[...all]/route.ts` — Better Auth's catch-all handler (see [`packages/auth`](../../packages/auth/README.md)).
+- `src/app/sign-in/`, `src/app/dashboard/` — minimal, unstyled proof-of-wiring for authentication (ADR-00012), not real UX yet.
 - `specs/` — Jest unit tests.
 
 ## Status
 
-Currently a minimal placeholder ("Hello, world") — no real business logic yet. This is genuinely the starting point, not a stub left behind.
+Mostly still a minimal placeholder ("Hello, world" at `/`) — no real business logic yet. Authentication is wired end-to-end (sign up/in/out, a session-protected route) as a real, working example, not a stub. Needs `docker compose up -d` + `pnpm run db:migrate` + a `.env` (see repo-root README) to actually run.
