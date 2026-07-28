@@ -26,6 +26,8 @@ Install [Node and pnpm](./.tool-versions) (via [asdf](https://asdf-vm.com/) or [
 
 Optional: [zizmor](https://docs.zizmor.sh/installation/) (pip/pipx, Homebrew, or Cargo) gives the pre-push hook a fast local check that GitHub Actions refs stay SHA-pinned (see [ADR-00010](./docs/adrs/00010-github-actions-supply-chain-hardening.md)). Not required — if it's missing, the hook just skips that check and prints a note; CI's `zizmor` job enforces it regardless.
 
+Also optional: [`jq`](https://jqlang.org/) (usually already installed — Homebrew, most Linux package managers) for `pnpm run hotspots`/`pnpm run health`'s churn×complexity report. Skips gracefully with a note if it's missing.
+
 Then:
 
 ```
@@ -56,13 +58,16 @@ Repo-wide scripts:
 pnpm run format        # format the whole repo with Prettier
 pnpm run format:check  # check formatting without writing
 pnpm run health         # repo health report — Knip, pnpm audit, osv-scanner,
-                        # Gitleaks, Semgrep, Bearer, and the full e2e suite
-                        # (see ADR-00009); non-blocking, for review, uses
-                        # whichever of those tools are installed
+                        # Gitleaks, Semgrep, Bearer, churn×complexity hotspots,
+                        # and the full e2e suite (see ADR-00009); non-blocking,
+                        # for review, uses whichever of those tools are installed
 pnpm run db:generate    # drizzle-kit generate — SQL migration from schema changes
 pnpm run db:migrate     # drizzle-kit migrate — apply pending migrations
 pnpm run db:reset       # drop + recreate local Postgres, re-migrate
 pnpm run deps:check     # syncpack lint — cross-package dependency version drift
+pnpm run hotspots       # files that are both frequently changed and complex —
+                        # real refactoring priority, not just "complex" or just
+                        # "busy" (needs jq; usually preinstalled, see below)
 ```
 
 CI (`.github/workflows/ci.yml`) runs on every push/PR: dependency version consistency (Syncpack), format check, lint, typecheck, unit tests, build, a critical-path e2e smoke test, and a secrets scan. A separate scheduled workflow (`repo-health.yml`, weekly + on demand) runs `pnpm run health` — the fuller, non-blocking checks, including the full e2e suite. Renovate is installed and keeps dependencies up to date automatically. See [`docs/scanning-tools.md`](./docs/scanning-tools.md) for the full current list of linting/security/CI-supply-chain tools, what each checks, and whether it blocks.

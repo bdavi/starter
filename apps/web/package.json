@@ -25,7 +25,8 @@
       },
       "typecheck": {
         "dependsOn": [
-          "typegen"
+          "typegen",
+          "^typecheck"
         ],
         "cache": true,
         "executor": "nx:run-commands",
