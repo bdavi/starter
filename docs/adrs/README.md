@@ -53,3 +53,4 @@ What this makes easier, what this makes harder, what we're deferring or acceptin
 | [00012](./00012-authentication-architecture.md)                 | Authentication Architecture                                 | Accepted |
 | [00013](./00013-environment-config-scoping.md)                  | Environment Config Scoping                                  | Accepted |
 | [00014](./00014-maximalist-linting-for-ai-agent-development.md) | Maximalist Linting Strategy for AI-Agent-Driven Development | Accepted |
+| [00015](./00015-periodic-maintenance-review.md)                 | Periodic Maintenance Review                                 | Accepted |

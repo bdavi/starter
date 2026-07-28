@@ -72,6 +72,8 @@ pnpm run hotspots       # files that are both frequently changed and complex —
 
 CI (`.github/workflows/ci.yml`) runs on every push/PR: dependency version consistency (Syncpack), format check, lint, typecheck, unit tests, build, a critical-path e2e smoke test, and a secrets scan. A separate scheduled workflow (`repo-health.yml`, weekly + on demand) runs `pnpm run health` — the fuller, non-blocking checks, including the full e2e suite. Renovate is installed and keeps dependencies up to date automatically. See [`docs/scanning-tools.md`](./docs/scanning-tools.md) for the full current list of linting/security/CI-supply-chain tools, what each checks, and whether it blocks.
 
+For a periodic maintenance audit beyond the automated checks above — refactor candidates, documentation drift, unreviewed Renovate PRs, all synthesized into one punch list you sign off on — see [`docs/maintenance-review.md`](./docs/maintenance-review.md) (ADR-00015). Claude Code users can run it directly with `/maintenance-review`.
+
 ## Architecture Decision Records
 
 Significant technical decisions are logged in [`docs/adrs`](./docs/adrs), in the order they were made. Start with [ADR-00000](./docs/adrs/00000-purpose-and-goals.md) for context, then browse the [index](./docs/adrs/README.md).

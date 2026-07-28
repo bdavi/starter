@@ -38,6 +38,8 @@ Every action ref in `ci.yml`/`repo-health.yml` is SHA-pinned, not tag-referenced
 
 E2E (ADR-00007's two-tier design): `apps/web-e2e` tests tagged `@critical` run on chromium on every push (`ci.yml`, blocking). The full suite (all tests, all browsers) is part of `pnpm run health`/`scripts/repo-health.sh` — runs locally on demand, and weekly + on-demand in CI via `repo-health.yml` (which installs Playwright's browsers first, then runs the same script). Needs Playwright browsers installed locally (`pnpm exec playwright install`) or it reports that clearly rather than silently doing nothing. Only one test exists so far (a smoke test, tagged `@critical`).
 
+A periodic maintenance review exists per [ADR-00015](./docs/adrs/00015-periodic-maintenance-review.md): [`docs/maintenance-review.md`](./docs/maintenance-review.md) is the tool-agnostic procedure (run `pnpm run health`, summarize open Renovate PRs, review hotspots/TODOs/documentation drift, produce one punch list, never implement anything itself); Claude Code additionally exposes it as `/maintenance-review` (`.claude/skills/maintenance-review/SKILL.md`, manually-invoked only). Each run appends to [`docs/maintenance-log.md`](./docs/maintenance-log.md) — check that file for what was left open last time before assuming a finding is new.
+
 Nested `apps/web/{README,AGENTS}.md` and `apps/web-e2e/{README,AGENTS}.md` exist per the convention below — check those first for anything specific to those apps before assuming root `AGENTS.md` has the full picture.
 
 Required Node and pnpm versions are pinned in `.tool-versions` (the portable format shared by both [asdf](https://asdf-vm.com/) and [mise](https://mise.jdx.dev/) — use whichever you prefer, neither is mandated).
