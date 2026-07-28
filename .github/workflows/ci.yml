@@ -27,27 +27,6 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Cache Nx computation cache
-        # Separate from pnpm's store cache above (that caches downloaded
-        # packages; this caches Nx's own per-task outputs, keyed internally
-        # by content hash under .nx/cache). Without this, `nx affected`
-        # still correctly narrows *which* projects run, but every task it
-        # does select re-executes from zero on every single CI run — no
-        # Nx Cloud is configured, and GitHub Actions runners start from a
-        # blank disk each time. The exact key is basically never hit (it's
-        # unique per commit) — that's intentional, so the post-job save
-        # step always runs; restore-keys then falls back to the most
-        # recent prior save, and Nx's own content hashing (not this key)
-        # is what decides whether any given task inside actually gets
-        # reused. GitHub evicts old cache entries automatically (10GB cap
-        # per repo, LRU) so this doesn't need manual pruning.
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: .nx/cache
-          key: nx-cache-${{ runner.os }}-${{ github.sha }}
-          restore-keys: |
-            nx-cache-${{ runner.os }}-
-
       - uses: nrwl/nx-set-shas@afb73a62d26e41464e9254689e1fd6122ee683c1 # v5.0.1
 
       - name: Dependency version consistency (Syncpack)
