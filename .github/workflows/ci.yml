@@ -49,7 +49,22 @@ jobs:
         run: pnpm nx affected -t test
 
       - name: Build
+        # apps/web imports @starter/auth/server (e.g. the dashboard route),
+        # which constructs its `db`/`auth` singletons at module scope —
+        # `next build`'s page-data-collection step imports every route
+        # module to inspect its exports, regardless of whether that route
+        # ends up static or dynamic, so this runs even though nothing here
+        # ever executes a real query. These are placeholders, not secrets:
+        # drizzle-orm/node-postgres and better-auth both only need the
+        # values to construct (they don't connect at construction time),
+        # the same fact packages/db's and packages/auth's own unit tests
+        # already rely on (see client.spec.ts/server.spec.ts) — just needed
+        # here too since this is a real `next build`, not Jest.
         run: pnpm nx affected -t build
+        env:
+          DATABASE_URL: postgresql://user:pass@localhost:5432/db
+          BETTER_AUTH_SECRET: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+          BETTER_AUTH_URL: http://localhost:3000
 
       - name: Install Playwright browsers (chromium only — critical path is fast by design)
         run: pnpm exec playwright install --with-deps chromium
