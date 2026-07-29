@@ -8,6 +8,13 @@ packages:
 # not preemptively for deps only one project currently uses.
 catalog:
   zod: ^4.4.3
+  # Shared across every app/package via packages/observability (ADR-00020)
+  # — deliberately catalog-pinned + consumed as peerDependencies rather
+  # than a direct dependency, so exactly one copy of this global-registry
+  # singleton exists tree-wide (same mitigation ADR-00004 established for
+  # React/Zod, applied to a new library).
+  "@opentelemetry/api": ^1.9.1
+  "@opentelemetry/api-logs": ^0.221.0
 allowBuilds:
   "@parcel/watcher": true
   # @better-auth/cli's optional support for adapters we don't use (we're
@@ -21,6 +28,12 @@ allowBuilds:
   esbuild: true
   less: false
   nx: true
+  # Transitive dep of @opentelemetry/sdk-node's (unused) gRPC exporters —
+  # packages/observability only uses the OTLP/HTTP exporters (ADR-00020).
+  # Its postinstall just prints a version-scheme mismatch warning; it does
+  # not compile anything (the published package ships pre-built dist/
+  # files), so there's nothing to gain by allowing it to run.
+  protobufjs: false
   sharp: true
   unrs-resolver: true
 blockExoticSubdeps: true
