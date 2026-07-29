@@ -49,10 +49,14 @@
   },
   "dependencies": {
     "@starter/auth": "workspace:*",
+    "@starter/config": "workspace:*",
+    "@starter/observability": "workspace:*",
     "better-auth": "^1.6.23",
     "next": "~16.2.11",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "server-only": "^0.0.1",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",

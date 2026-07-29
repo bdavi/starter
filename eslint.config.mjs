@@ -105,12 +105,15 @@ export default [
     // validation are also legitimate (testing the env-parsing behavior
     // itself, not bypassing it), and tooling config files (e.g.
     // playwright.config.mts's own process.env.CI check) aren't part of the
-    // app/package runtime this rule is about.
+    // app/package runtime this rule is about. instrumentation.ts's
+    // NEXT_RUNTIME check is the same category as the CI check — Next's own
+    // build-injected runtime discriminator, not app config.
     files: [
       "**/create-env-getter.ts",
       "**/*.spec.ts",
       "**/*.test.ts",
       "**/playwright.config.mts",
+      "**/instrumentation.ts",
     ],
     rules: {
       "n/no-process-env": "off",
@@ -140,6 +143,16 @@ export default [
         {
           enforceBuildableLibDependency: true,
           allow: ["^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$"],
+          // apps/web/src/instrumentation.ts deliberately dynamic-imports
+          // @starter/observability/node (the officially-recommended
+          // Next.js pattern for instrumentation.ts, so Node-only SDK code
+          // never gets pulled into the Edge runtime bundle), while every
+          // other consumer statically imports the lightweight facade from
+          // @starter/observability's other subpaths. Without this
+          // exception, Nx's default (require static-vs-dynamic consistency
+          // per library) flags that second, completely normal usage as an
+          // error.
+          checkDynamicDependenciesExceptions: ["@starter/observability*"],
           // Minimal, unambiguous constraints (ADR-00004: "apps are thin,
           // packages hold the logic"):
           //   - a package must never depend on an app, regardless of which
