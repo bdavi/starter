@@ -1,0 +1,142 @@
+# Real dev/prod pipeline config — see ADR-00018. Same file, same shape, in
+# both Docker Compose locally and production (ADR-00008's dev/prod parity
+# principle extended to this service). Only the exporter destinations
+# (env vars) differ between environments, never the pipeline shape.
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+  # Kept for dev/prod config parity even though it's low-value as *data*
+  # locally — see ADR-00018's Context. Reports on this Collector's own
+  # container, not on any app's resource usage, since apps run natively
+  # here (ADR-00008), not in Docker.
+  host_metrics:
+    collection_interval: 60s
+    scrapers:
+      cpu:
+      memory:
+      disk:
+      network:
+
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 512
+  batch:
+  # LOGS half of the health-check drop (ADR-00018/ADR-00021) — matches
+  # apps/web's health-check route (apps/web/src/app/api/health). Each log
+  # record is independent (no multi-record structure to preserve), so
+  # per-record OTTL matching is the right tool here, unlike for traces
+  # (see tail_sampling below).
+  filter/health_checks:
+    error_mode: ignore
+    log_conditions:
+      - 'log.attributes["http.route"] == "/api/health"'
+  # TRACES half of the health-check drop (ADR-00021 — supersedes an
+  # earlier filterprocessor-based approach for traces, kept for logs
+  # above). filterprocessor's span_conditions only drop the individual
+  # matching span, not the whole trace — verified against real apps/web
+  # traffic that this left orphaned sibling/child spans (e.g. "resolve
+  # page components", "executing api route (app) /api/health") behind in
+  # Tempo even when the root span matched, because Next.js's
+  # auto-instrumentation doesn't reliably set http.route on every span of
+  # a request (http.target is the one attribute consistently present on
+  # the root span). tail_sampling buffers each trace until complete, then
+  # keeps or drops it as a single unit — the `drop` policy is an explicit
+  # veto (checked before any `sample` decision), so `sample_everything_else`
+  # is required alongside it, not optional — see its own README's
+  # "Policy Decision Flow": with no explicit "sample" decision from any
+  # policy, a trace is NOT sampled by default.
+  tail_sampling:
+    # Default is 30s — shortened for faster local feedback. Safe for a
+    # single, mostly-synchronous app on localhost; revisit if real
+    # cross-service calls ever make trace completion meaningfully slower
+    # than this.
+    decision_wait: 5s
+    policies:
+      - name: drop_health_checks
+        type: drop
+        drop:
+          drop_sub_policy:
+            - name: drop_health_checks_target
+              type: string_attribute
+              string_attribute:
+                key: http.target
+                values: ["/api/health"]
+      - name: sample_everything_else
+        type: always_sample
+  # hmac-sha256, not plain hashing or static masking — see ADR-00018 for
+  # why (correlatable without being reversible for low-entropy values like
+  # IPs). allow_all_keys: true means only the blocked_values patterns
+  # below get touched; everything else passes through unmodified.
+  redaction:
+    allow_all_keys: true
+    redact_all_types: true
+    blocked_values:
+      - '(?:[0-9]{1,3}\.){3}[0-9]{1,3}' # IPv4
+      - "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}" # email
+    # Must be >= 32 bytes (enforced by the processor at startup) — generate
+    # with e.g. `openssl rand -hex 32`.
+    hash_function: hmac-sha256
+    hmac_key: "${env:OTEL_REDACTION_HMAC_KEY}"
+    # silent in real pipelines — debug/info audit attributes are useful
+    # for the verification suite (test/), not for production output.
+    summary: silent
+
+connectors:
+  # Derives Request/Error/Duration metrics from trace spans. As an
+  # exporter-position connector, it only sees whatever survives every
+  # processor ahead of it in the traces pipeline — including
+  # tail_sampling, so health-check traffic is deliberately excluded from
+  # RED metrics too (ADR-00018/00021), not just from Tempo/Sentry.
+  span_metrics:
+
+exporters:
+  # Reused for all three Grafana destinations — Loki/Tempo/Mimir all
+  # accept native OTLP directly (ADR-00017), no per-backend exporter
+  # component needed.
+  otlp_http/loki:
+    endpoint: "${env:OTEL_LOKI_OTLP_ENDPOINT}"
+  otlp_http/tempo:
+    endpoint: "${env:OTEL_TEMPO_OTLP_ENDPOINT}"
+  otlp_http/mimir:
+    endpoint: "${env:OTEL_MIMIR_OTLP_ENDPOINT}"
+  # Collector-routed half of ADR-00017's dual Sentry path (the other half
+  # is packages/observability calling Sentry.captureException() directly
+  # — see ADR-00020). Routes by the service.name resource attribute to a
+  # Sentry project slug. NOTE: when both this exporter and the Sentry SDK
+  # are active, the SDK's OTLP integration needs
+  # setup_otlp_traces_exporter=false, or trace connectedness breaks —
+  # this exporter doesn't maintain it on its own.
+  sentry:
+    url: "${env:SENTRY_URL}"
+    org_slug: "${env:SENTRY_ORG_SLUG}"
+    auth_token: "${env:SENTRY_AUTH_TOKEN}"
+
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133
+
+service:
+  extensions: [health_check]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, tail_sampling, redaction, batch]
+      exporters: [otlp_http/tempo, sentry, span_metrics]
+    metrics:
+      receivers: [otlp, host_metrics]
+      processors: [memory_limiter, redaction, batch]
+      exporters: [otlp_http/mimir]
+    metrics/spanmetrics:
+      receivers: [span_metrics]
+      processors: [memory_limiter, batch]
+      exporters: [otlp_http/mimir]
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, filter/health_checks, redaction, batch]
+      exporters: [otlp_http/loki]

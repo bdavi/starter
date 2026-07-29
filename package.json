@@ -14,7 +14,8 @@
     "db:migrate": "nx run db:db-migrate",
     "db:reset": "bash scripts/db-reset.sh",
     "deps:check": "syncpack lint",
-    "hotspots": "bash scripts/churn-vs-complexity.sh"
+    "hotspots": "bash scripts/churn-vs-complexity.sh",
+    "otel:sync": "bash scripts/otel-collector-sync.sh"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.0",

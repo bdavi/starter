@@ -1,0 +1,76 @@
+# OpenTelemetry Collector Builder (OCB) manifest — see ADR-00018 for why a
+# custom build instead of the stock Contrib image, and ADR-00019 for how this
+# gets built/tested/shipped. Build with:
+#
+#   builder --config manifest.yaml
+#
+# Every component version below is pinned to v0.157.0 (the current
+# opentelemetry-collector / opentelemetry-collector-contrib release at the
+# time this was written) to match core and contrib exactly — mixing
+# versions across the two is a common source of build breakage. Bumping
+# this isn't covered by Renovate (see ADR-00018's Consequences) — it's a
+# manual, deliberate version bump, same as any other pinned tool version
+# in this repo.
+
+dist:
+  name: starter-otelcol
+  description: Custom OpenTelemetry Collector for the starter template (ADR-00018)
+  output_path: ./dist
+  version: 0.157.0
+
+receivers:
+  # The only real ingestion path — every app talks OTLP to this Collector
+  # (ADR-00016). No other receiver accepts application telemetry.
+  - gomod: go.opentelemetry.io/collector/receiver/otlpreceiver v0.157.0
+  # Kept for dev/prod config parity even though it's low-value as *data*
+  # locally, since apps run natively here, not in Docker (ADR-00008). See
+  # ADR-00018's Context for the full reasoning — this is deliberate, not
+  # an oversight.
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/hostmetricsreceiver v0.157.0
+
+processors:
+  - gomod: go.opentelemetry.io/collector/processor/batchprocessor v0.157.0
+  - gomod: go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.157.0
+  # hash_function: hmac-sha256 in config, not the default mask/delete mode
+  # — see ADR-00018 for why (correlatable without being reversible for
+  # low-entropy values like IPs). Contrib-only; alpha stability for logs,
+  # beta for traces — accepted, mitigated by the hard testing requirement
+  # in test/.
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/redactionprocessor v0.157.0
+  # Drops health-check LOG telemetry (ADR-00018/ADR-00021) — span-level
+  # OTTL matching is the right tool for logs (each log record is
+  # independent, no multi-record structure to preserve). NOT used for
+  # traces anymore — see tailsamplingprocessor below for why.
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/filterprocessor v0.157.0
+  # Drops health-check TRACE telemetry as a whole trace, not per-span
+  # (ADR-00021). filterprocessor's span-level drop semantics turned out to
+  # be the wrong tool for this: it only drops individual matching spans,
+  # leaving sibling/child spans of the same trace behind as orphaned
+  # partial data — verified against real apps/web traffic, not just
+  # synthetic single-span test data. tail_sampling buffers each trace
+  # until it's complete, then keeps or drops it as one unit.
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/tailsamplingprocessor v0.157.0
+
+connectors:
+  # Derives Request/Error/Duration metrics from trace spans — must run
+  # before any future sampling processor in pipeline order, or derived
+  # metrics only reflect the sampled subset (ADR-00018).
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/connector/spanmetricsconnector v0.157.0
+
+exporters:
+  # Reused for all three Grafana destinations (Loki/Tempo/Mimir all accept
+  # native OTLP — confirmed in ADR-00017, no dedicated exporter needed).
+  - gomod: go.opentelemetry.io/collector/exporter/otlphttpexporter v0.157.0
+  # Sentry-specific path for the Collector-routed half of ADR-00017's dual
+  # error-reporting design. Alpha stability for traces and logs (confirmed
+  # directly against the component's own README at build time) — accepted
+  # per ADR-00018, mitigated by the same testing requirement.
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/sentryexporter v0.157.0
+  # Test-only destinations — used by config/collector.test.yaml, never by
+  # the real dev/prod config. Included in every build (not a separate
+  # binary) so the exact same compiled Collector is what gets tested.
+  - gomod: go.opentelemetry.io/collector/exporter/debugexporter v0.157.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/fileexporter v0.157.0
+
+extensions:
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.157.0

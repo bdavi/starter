@@ -1,0 +1,92 @@
+name: services/otel-collector
+
+# Path-filtered rather than nx-affected-based, deliberately — this
+# directory has zero dependency edges to/from the rest of the repo, so
+# there's no graph for Nx to reason about here. See ADR-00019.
+#
+# Two jobs, not one: build-test uses actions/setup-go's dependency cache
+# and never publishes anything; build-push-image publishes but doesn't
+# use that cache. Combining caching with publishing in one job is a real
+# cache-poisoning risk (zizmor's cache-poisoning audit flags this
+# specifically) — splitting them is the fix, not a suppression.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "services/otel-collector/**"
+  pull_request:
+    paths:
+      - "services/otel-collector/**"
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: "1.26.5" # keep in sync with services/otel-collector/.tool-versions
+          cache-dependency-path: services/otel-collector/manifest.yaml
+
+      - name: Install OCB builder
+        # Version must match manifest.yaml's dist.version and the
+        # component versions inside it — mixing versions is a common
+        # source of build breakage (ADR-00018).
+        run: go install go.opentelemetry.io/collector/cmd/builder@v0.157.0
+
+      - name: Build Collector binary
+        working-directory: services/otel-collector
+        run: builder --config manifest.yaml
+
+      - name: Install telemetrygen
+        run: go install github.com/open-telemetry/opentelemetry-collector-contrib/cmd/telemetrygen@v0.157.0
+
+      - name: Verify redaction, health-check filtering, hostmetrics
+        # Hard requirement, not optional — see ADR-00018.
+        working-directory: services/otel-collector
+        run: bash test/verify.sh
+
+  build-push-image:
+    needs: build-test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
+
+      - name: Compute image tag
+        id: tags
+        # Deterministic hash of this subtree's exact content at this
+        # commit — the same primitive the local pull-vs-build script uses
+        # to find a matching prebuilt image (ADR-00019).
+        run: echo "tree_hash=$(git rev-parse HEAD:services/otel-collector)" >> "$GITHUB_OUTPUT"
+
+      - uses: docker/login-action@371161bbe7024a29a25c5e19bfcbc0804fe9ad2c # v4.5.2
+        if: github.event_name == 'push'
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build (and push on main only)
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: services/otel-collector
+          push: ${{ github.event_name == 'push' }}
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/starter-otel-collector:${{ steps.tags.outputs.tree_hash }}
+            ghcr.io/${{ github.repository_owner }}/starter-otel-collector:main
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

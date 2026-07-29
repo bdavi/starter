@@ -1,0 +1,15 @@
+{
+  "$comment": "Canonical list of sensitive-value patterns both redaction paths must catch — the Collector's redaction processor (config/collector.yaml, verified by test/verify.sh) and packages/observability's Sentry beforeSend hook (verified by its own test). Add a case here when either implementation needs to catch a new pattern; both test suites read this same file, so adding one without updating both implementations shows up as a failure on whichever side is missing it. See ADR-00017/00018/00020.",
+  "vectors": [
+    {
+      "kind": "ipv4",
+      "value": "203.0.113.42",
+      "description": "IPv4 address"
+    },
+    {
+      "kind": "email",
+      "value": "test@example.com",
+      "description": "email address"
+    }
+  ]
+}

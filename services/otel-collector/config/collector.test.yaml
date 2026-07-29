@@ -1,0 +1,94 @@
+# Test-mode config for the verification suite (test/) — see ADR-00018's
+# "Testing (hard requirement)" section. Same receivers/processors as
+# config/collector.yaml (this is what's actually being verified); only the
+# exporters differ, swapped for a file exporter the test script reads
+# instead of real Grafana/Sentry destinations. Never used outside test/.
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+  host_metrics:
+    collection_interval: 1s
+    scrapers:
+      cpu:
+      memory:
+
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 512
+  batch:
+    # Near-instant flush for tests — the real config's default batch
+    # timing would make telemetrygen's short test runs flaky.
+    timeout: 100ms
+  filter/health_checks:
+    error_mode: ignore
+    log_conditions:
+      - 'log.attributes["http.route"] == "/api/health"'
+  tail_sampling:
+    # Real config uses 5s — 1s here for fast test turnaround. Keep
+    # test/verify.sh's post-send sleep comfortably longer than this.
+    decision_wait: 1s
+    policies:
+      - name: drop_health_checks
+        type: drop
+        drop:
+          drop_sub_policy:
+            - name: drop_health_checks_target
+              type: string_attribute
+              string_attribute:
+                key: http.target
+                values: ["/api/health"]
+      - name: sample_everything_else
+        type: always_sample
+  redaction:
+    allow_all_keys: true
+    redact_all_types: true
+    blocked_values:
+      - '(?:[0-9]{1,3}\.){3}[0-9]{1,3}' # IPv4
+      - "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}" # email
+    hash_function: hmac-sha256
+    hmac_key: "${env:OTEL_REDACTION_HMAC_KEY}"
+    # debug here (not silent, unlike the real config) — the audit
+    # attributes are useful signal for the verification suite to assert
+    # against directly.
+    summary: debug
+
+connectors:
+  span_metrics:
+
+exporters:
+  file/traces:
+    path: /tmp/otelcol-test-output/traces.json
+  file/logs:
+    path: /tmp/otelcol-test-output/logs.json
+  file/metrics:
+    path: /tmp/otelcol-test-output/metrics.json
+
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133
+
+service:
+  extensions: [health_check]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, tail_sampling, redaction, batch]
+      exporters: [file/traces, span_metrics]
+    metrics:
+      receivers: [otlp, host_metrics]
+      processors: [memory_limiter, redaction, batch]
+      exporters: [file/metrics]
+    metrics/spanmetrics:
+      receivers: [span_metrics]
+      processors: [memory_limiter, batch]
+      exporters: [file/metrics]
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, filter/health_checks, redaction, batch]
+      exporters: [file/logs]
