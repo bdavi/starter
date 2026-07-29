@@ -36,21 +36,28 @@ What this makes easier, what this makes harder, what we're deferring or acceptin
 
 ## Index
 
-| ADR                                                             | Title                                                       | Status   |
-| --------------------------------------------------------------- | ----------------------------------------------------------- | -------- |
-| [00000](./00000-purpose-and-goals.md)                           | Project Purpose & Design Goals                              | Accepted |
-| [00001](./00001-monorepo-vs-polyrepo.md)                        | Monorepo vs Polyrepo                                        | Accepted |
-| [00002](./00002-ai-agent-context-files.md)                      | AI Agent Context Files                                      | Accepted |
-| [00003](./00003-web-app-language-and-architecture.md)           | Web Application Language & Architecture                     | Accepted |
-| [00004](./00004-monorepo-app-and-package-structure.md)          | Monorepo App & Package Structure                            | Accepted |
-| [00005](./00005-monorepo-build-tooling.md)                      | Monorepo Build Tooling                                      | Accepted |
-| [00006](./00006-documentation-strategy.md)                      | Documentation Strategy                                      | Accepted |
-| [00007](./00007-testing-and-qa-strategy.md)                     | Testing & QA Strategy                                       | Accepted |
-| [00008](./00008-local-development-environment.md)               | Local Development Environment                               | Accepted |
-| [00009](./00009-linting-formatting-and-security-scanning.md)    | Linting, Formatting & Security Scanning                     | Accepted |
-| [00010](./00010-github-actions-supply-chain-hardening.md)       | GitHub Actions Supply-Chain Hardening                       | Accepted |
-| [00011](./00011-database-technology.md)                         | Database Technology                                         | Accepted |
-| [00012](./00012-authentication-architecture.md)                 | Authentication Architecture                                 | Accepted |
-| [00013](./00013-environment-config-scoping.md)                  | Environment Config Scoping                                  | Accepted |
-| [00014](./00014-maximalist-linting-for-ai-agent-development.md) | Maximalist Linting Strategy for AI-Agent-Driven Development | Accepted |
-| [00015](./00015-periodic-maintenance-review.md)                 | Periodic Maintenance Review                                 | Accepted |
+| ADR                                                                       | Title                                                           | Status   |
+| ------------------------------------------------------------------------- | --------------------------------------------------------------- | -------- |
+| [00000](./00000-purpose-and-goals.md)                                     | Project Purpose & Design Goals                                  | Accepted |
+| [00001](./00001-monorepo-vs-polyrepo.md)                                  | Monorepo vs Polyrepo                                            | Accepted |
+| [00002](./00002-ai-agent-context-files.md)                                | AI Agent Context Files                                          | Accepted |
+| [00003](./00003-web-app-language-and-architecture.md)                     | Web Application Language & Architecture                         | Accepted |
+| [00004](./00004-monorepo-app-and-package-structure.md)                    | Monorepo App & Package Structure                                | Accepted |
+| [00005](./00005-monorepo-build-tooling.md)                                | Monorepo Build Tooling                                          | Accepted |
+| [00006](./00006-documentation-strategy.md)                                | Documentation Strategy                                          | Accepted |
+| [00007](./00007-testing-and-qa-strategy.md)                               | Testing & QA Strategy                                           | Accepted |
+| [00008](./00008-local-development-environment.md)                         | Local Development Environment                                   | Accepted |
+| [00009](./00009-linting-formatting-and-security-scanning.md)              | Linting, Formatting & Security Scanning                         | Accepted |
+| [00010](./00010-github-actions-supply-chain-hardening.md)                 | GitHub Actions Supply-Chain Hardening                           | Accepted |
+| [00011](./00011-database-technology.md)                                   | Database Technology                                             | Accepted |
+| [00012](./00012-authentication-architecture.md)                           | Authentication Architecture                                     | Accepted |
+| [00013](./00013-environment-config-scoping.md)                            | Environment Config Scoping                                      | Accepted |
+| [00014](./00014-maximalist-linting-for-ai-agent-development.md)           | Maximalist Linting Strategy for AI-Agent-Driven Development     | Accepted |
+| [00015](./00015-periodic-maintenance-review.md)                           | Periodic Maintenance Review                                     | Accepted |
+| [00016](./00016-opentelemetry-adoption-and-observability-requirements.md) | OpenTelemetry Adoption & Observability Requirements             | Accepted |
+| [00017](./00017-telemetry-backend-selection.md)                           | Telemetry Backend Selection (Grafana + Sentry)                  | Accepted |
+| [00018](./00018-otel-collector-architecture-and-redaction.md)             | OTel Collector Architecture, Components & Redaction Policy      | Accepted |
+| [00019](./00019-non-ts-service-pattern.md)                                | Non-TypeScript Service Pattern (Structure, CI/CD, Registry)     | Accepted |
+| [00020](./00020-packages-observability-design.md)                         | packages/observability Design                                   | Accepted |
+| [00021](./00021-local-observability-backend-stack.md)                     | Local Observability Backend Stack (Grafana Stack + GlitchTip)   | Accepted |
+| [00022](./00022-health-check-trace-filtering-tail-sampling.md)            | Health-Check Trace Filtering — filterprocessor to tail_sampling | Accepted |
