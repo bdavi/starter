@@ -1,0 +1,38 @@
+# Provisioned automatically on container start (ADR-00021) — no manual
+# datasource setup through Grafana's UI. Tempo's trace-to-logs/metrics
+# links and the Loki derived-field regex wire the three signals together
+# in the UI (click a trace ID in a log line to jump to that trace, etc.).
+apiVersion: 1
+
+datasources:
+  - name: Tempo
+    uid: tempo
+    type: tempo
+    access: proxy
+    url: http://tempo:3200
+    jsonData:
+      tracesToLogsV2:
+        datasourceUid: loki
+      tracesToMetrics:
+        datasourceUid: mimir
+      serviceMap:
+        datasourceUid: mimir
+
+  - name: Mimir
+    uid: mimir
+    type: prometheus
+    access: proxy
+    url: http://mimir:9009/prometheus
+    isDefault: true
+
+  - name: Loki
+    uid: loki
+    type: loki
+    access: proxy
+    url: http://loki:3100
+    jsonData:
+      derivedFields:
+        - name: TraceID
+          datasourceUid: tempo
+          matcherRegex: "traceID=(\\w+)"
+          url: "$${__value.raw}"

@@ -1,0 +1,22 @@
+# Single-binary local dev config (ADR-00021) — local filesystem storage.
+# Both grpc and http OTLP receivers enabled; the Collector's
+# otlp_http/tempo exporter (config/collector.yaml) needs http specifically.
+server:
+  http_listen_port: 3200
+
+distributor:
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+          endpoint: 0.0.0.0:4317
+        http:
+          endpoint: 0.0.0.0:4318
+
+storage:
+  trace:
+    backend: local
+    local:
+      path: /var/tempo/blocks
+    wal:
+      path: /var/tempo/wal

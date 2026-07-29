@@ -20,5 +20,124 @@ services:
       timeout: 5s
       retries: 10
 
+  otel-collector:
+    # No `build:` here on purpose — `pnpm run otel:sync` (scripts/otel-collector-sync.sh)
+    # decides whether to pull a prebuilt image or build locally, and tags
+    # the result to this exact name, before this service ever starts.
+    # pull_policy: never keeps Compose from making that decision itself —
+    # see ADR-00019 for why Compose's own pull_policy+build interaction
+    # isn't trusted for this.
+    image: starter-otel-collector:local
+    pull_policy: never
+    restart: unless-stopped
+    depends_on: [loki, tempo, mimir]
+    ports:
+      - "4317:4317" # OTLP gRPC
+      - "4318:4318" # OTLP HTTP
+      - "13133:13133" # health check
+    environment:
+      OTEL_REDACTION_HMAC_KEY: ${OTEL_REDACTION_HMAC_KEY:?set in .env — see services/otel-collector/README.md}
+      OTEL_LOKI_OTLP_ENDPOINT: ${OTEL_LOKI_OTLP_ENDPOINT:?set in .env — see services/otel-collector/README.md}
+      OTEL_TEMPO_OTLP_ENDPOINT: ${OTEL_TEMPO_OTLP_ENDPOINT:?set in .env — see services/otel-collector/README.md}
+      OTEL_MIMIR_OTLP_ENDPOINT: ${OTEL_MIMIR_OTLP_ENDPOINT:?set in .env — see services/otel-collector/README.md}
+      # ADR-00021: no local self-hosted equivalent of Sentry's org-management
+      # API/OTLP ingestion exists — GlitchTip (below) only covers the
+      # direct-SDK path (SENTRY_DSN), not this one. These stay syntactically
+      # valid but point nowhere real for local dev on purpose: the Collector
+      # requires non-empty values to start at all (verified), but the
+      # sentryexporter fails soft (a background warning + retry, doesn't
+      # affect any other pipeline) when they don't resolve to anything.
+      SENTRY_URL: ${SENTRY_URL:?set in .env — see services/otel-collector/README.md}
+      SENTRY_ORG_SLUG: ${SENTRY_ORG_SLUG:?set in .env — see services/otel-collector/README.md}
+      SENTRY_AUTH_TOKEN: ${SENTRY_AUTH_TOKEN:?set in .env — see services/otel-collector/README.md}
+    # No healthcheck: override here — the image's own Dockerfile already
+    # bakes one in (wget --spider against the health_check extension).
+
+  # Self-hosted Grafana stack (ADR-00017/ADR-00021) — real Loki/Tempo/Mimir,
+  # not lighter local-only substitutes, mirroring ADR-00008's principle for
+  # Postgres. Single-binary/monolithic mode throughout: fine for one local
+  # dev's traffic, not how any of these would run in production.
+  loki:
+    image: grafana/loki:3.6.13
+    restart: unless-stopped
+    command: ["-config.file=/etc/loki/loki-config.yaml"]
+    volumes:
+      - ./docker/loki/loki-config.yaml:/etc/loki/loki-config.yaml:ro
+      - loki-data:/loki
+
+  tempo:
+    image: grafana/tempo:3.0.0
+    restart: unless-stopped
+    command: ["-config.file=/etc/tempo/tempo.yaml"]
+    volumes:
+      - ./docker/tempo/tempo.yaml:/etc/tempo/tempo.yaml:ro
+      - tempo-data:/var/tempo
+
+  mimir:
+    image: grafana/mimir:3.1.4
+    restart: unless-stopped
+    command: ["-config.file=/etc/mimir/mimir.yaml"]
+    volumes:
+      - ./docker/mimir/mimir.yaml:/etc/mimir/mimir.yaml:ro
+      - mimir-data:/data
+
+  grafana:
+    image: grafana/grafana:13.1.1
+    restart: unless-stopped
+    depends_on: [loki, tempo, mimir]
+    ports:
+      # Host-side remapped off Grafana's default 3000 — apps/web already
+      # owns that port. Internal container port stays 3000 (unmapped
+      # elsewhere in this file, so no actual conflict there either).
+      - "3001:3000"
+    environment:
+      # Skips Grafana's setup wizard/login for local-only use — this port
+      # is never exposed beyond localhost.
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+    volumes:
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning:ro
+      - grafana-data:/var/lib/grafana
+
+  # GlitchTip (ADR-00021) — Sentry-DSN-compatible, covers packages/observability's
+  # direct-SDK error path (SENTRY_DSN) only, not the Collector's sentryexporter
+  # (see the otel-collector service's SENTRY_* comment above for why).
+  glitchtip-postgres:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - glitchtip-postgres-data:/var/lib/postgresql
+
+  glitchtip-valkey:
+    image: valkey/valkey:9
+    restart: unless-stopped
+
+  glitchtip:
+    image: glitchtip/glitchtip:6
+    restart: unless-stopped
+    depends_on: [glitchtip-postgres, glitchtip-valkey]
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@glitchtip-postgres:5432/postgres
+      VALKEY_URL: redis://glitchtip-valkey:6379
+      SECRET_KEY: ${GLITCHTIP_SECRET_KEY:?set in .env — see .env.example}
+      EMAIL_URL: consolemail:// # prints emails (e.g. invites) to this container's logs instead of requiring real SMTP — local dev only
+      GLITCHTIP_DOMAIN: http://localhost:8000
+      DEFAULT_FROM_EMAIL: noreply@example.com
+      ENABLE_ADMIN: "False"
+      SERVER_ROLE: all_in_one # web + worker + beat in one container — no separate celery service needed (GlitchTip 6+)
+    volumes:
+      - glitchtip-uploads:/code/uploads
+
 volumes:
   postgres-data:
+  loki-data:
+  tempo-data:
+  mimir-data:
+  grafana-data:
+  glitchtip-postgres-data:
+  glitchtip-uploads:
