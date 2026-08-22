@@ -66,7 +66,7 @@ services:
       - loki-data:/loki
 
   tempo:
-    image: grafana/tempo:3.0.0
+    image: grafana/tempo:3.0.3
     restart: unless-stopped
     command: ["-config.file=/etc/tempo/tempo.yaml"]
     volumes:
