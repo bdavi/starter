@@ -41,7 +41,7 @@
     "@opentelemetry/sdk-metrics": "^2.10.0",
     "@opentelemetry/sdk-node": "^0.221.0",
     "@opentelemetry/semantic-conventions": "^1.43.0",
-    "@sentry/node": "10.67.0",
+    "@sentry/node": "10.72.0",
     "@starter/config": "workspace:*",
     "pino": "^10.3.1",
     "pino-opentelemetry-transport": "^4.0.2",
