@@ -58,7 +58,7 @@ services:
   # Postgres. Single-binary/monolithic mode throughout: fine for one local
   # dev's traffic, not how any of these would run in production.
   loki:
-    image: grafana/loki:3.6.13
+    image: grafana/loki:3.7.7
     restart: unless-stopped
     command: ["-config.file=/etc/loki/loki-config.yaml"]
     volumes:
